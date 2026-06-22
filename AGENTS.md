@@ -87,7 +87,7 @@ Source lives under `src/`. Each file has one responsibility:
 | -------------------------- | -------------------------------------------------------------------------- |
 | `index.ts`                 | Public entry point. Re-exports the whole API; `VERSION`.                    |
 | `extensions.ts`            | `defaultExtensions(opts?)` — the OSS TipTap extension set.                  |
-| `slash/items.ts`           | `SlashItem` type + `defaultSlashItems` + `filterSlashItems` (headings, lists, quote, code, …). |
+| `slash/items.tsx`          | `SlashItem` type + `defaultSlashItems` + `filterSlashItems` (headings, lists, quote, code, …). |
 | `slash/SlashCommand.ts`    | TipTap `@tiptap/suggestion` wiring — `createSlashCommand(items)`.           |
 | `slash/icons.tsx`          | Icon components (`ReactNode`) used by default slash items.                  |
 | `slash/SlashMenu.tsx`      | Controlled, grouped slash-menu UI; runs the clicked item and closes.        |
@@ -96,7 +96,7 @@ Source lives under `src/`. Each file has one responsibility:
 | `bubble/LinkInput.tsx`     | Inline link-URL input shown inside the bubble.                              |
 | `gutter/Gutter.tsx`        | `＋` gutter button — tracks cursor block and opens the slash popup.         |
 | `positioning.ts`           | `clampPopup(rect, viewport)` — keeps slash popup inside the viewport.       |
-| `ai/aiSlashItems.ts`       | `AiAdapter` type + `aiSlashItems(ai, hooks?)` — "Continue Writing" / "Ask AI". |
+| `ai/aiSlashItems.tsx`      | `AiAdapter` type + `aiSlashItems(ai, hooks?)` — "Continue Writing" / "Ask AI". |
 | `GlassEditor.tsx`          | The main component. Composes extensions, bubble menu, gutter, and slash.    |
 | `styles.css`               | CSS-variable theme (light/dark auto-switch) + structural layout hooks.      |
 | `guards.test.ts`           | Architecture guard tests — enforce the [guarded patterns](#guarded-patterns-do-not-break). |

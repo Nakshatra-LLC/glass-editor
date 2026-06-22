@@ -189,14 +189,22 @@ Override any token from your app's CSS:
 
 | Path | Responsibility |
 | --- | --- |
-| `src/GlassEditor.tsx` | The React component — `useEditor`, bubble menu, slash wiring, controlled `value`. |
-| `src/extensions.ts` | `defaultExtensions(opts)` — the free extension set, configurable. |
-| `src/slash/items.ts` | `SlashItem` type + `defaultSlashItems` (the block command registry). |
-| `src/slash/SlashMenu.tsx` | The grouped, controlled slash-menu UI. |
-| `src/ai/aiSlashItems.ts` | Builds the Continue / Ask items from an `AiAdapter`. |
-| `src/index.ts` | Public exports. |
-| `src/styles.css` | Minimal structural styles + class hooks. |
-| `src/guards.test.ts` | Architecture guard tests (peer singletons, OSS-only, zero coupling, stable API). |
+| `src/GlassEditor.tsx` | The React component — composes extensions, bubble menu, gutter, and slash wiring with controlled `value`. |
+| `src/extensions.ts` | `defaultExtensions(opts?)` — the OSS TipTap extension set (StarterKit + free additions). |
+| `src/index.ts` | Public entry point; re-exports the API and `VERSION`. |
+| `src/slash/items.tsx` | `SlashItem` type + `defaultSlashItems` + `filterSlashItems` (headings, lists, quote, code, …). |
+| `src/slash/SlashCommand.ts` | TipTap `@tiptap/suggestion` wiring — `createSlashCommand(items)`. |
+| `src/slash/icons.tsx` | Icon components (`ReactNode`) used by default slash items. |
+| `src/slash/SlashMenu.tsx` | Controlled, grouped slash-menu UI; runs the clicked item and closes. |
+| `src/bubble/items.ts` | `BubbleItem` type + `defaultBubbleItems` (Bold, Italic, Link). |
+| `src/bubble/BubbleMenu.tsx` | Selection bubble toolbar; merges `defaultBubbleItems` + consumer `bubbleItems`. |
+| `src/bubble/LinkInput.tsx` | Inline link-URL input shown inside the bubble. |
+| `src/ai/aiSlashItems.tsx` | `AiAdapter` type + `aiSlashItems(ai, hooks?)` — "Continue Writing" / "Ask AI". |
+| `src/ai/AskAiInput.tsx` | Inline Ask-AI input shown in the slash menu. |
+| `src/gutter/Gutter.tsx` | `＋` gutter button — tracks cursor block and opens the slash popup. |
+| `src/positioning.ts` | `clampPopup(rect, viewport)` — keeps slash popup inside the viewport. |
+| `src/styles.css` | CSS-variable theme (light/dark auto-switch) + structural layout hooks. |
+| `src/guards.test.ts` | Architecture guard tests — enforce peer singletons, OSS-only, zero coupling, stable API. |
 
 Built with **Vite** in library mode (ESM + `.d.ts` via `vite-plugin-dts`, peers externalized). Tested with **vitest + @testing-library/react + jsdom**.
 
