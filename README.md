@@ -7,6 +7,8 @@
 
 **A small, reusable React + TipTap rich-text editor — pluggable blocks, a `/` slash-command menu, and an injected AI adapter. Domain-agnostic.**
 
+[![CI](https://github.com/Nakshatra-LLC/clean-editor/actions/workflows/ci.yml/badge.svg)](https://github.com/Nakshatra-LLC/clean-editor/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@nakshatra.io/clean-editor.svg)](https://www.npmjs.com/package/@nakshatra.io/clean-editor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-6366F1.svg)](LICENSE)
 ![React](https://img.shields.io/badge/React-18%2B-2DD4BF.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-6366F1.svg)
@@ -36,7 +38,7 @@ The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather 
 
 ## Status
 
-**Early.** The public API below reflects the current contract. The package is **not yet published to npm** — consume it via a local link during development; npm publish lands once the API stabilizes. Full design notes live in [`docs/superpowers/specs/2026-06-22-glass-editor-design.md`](docs/superpowers/specs/2026-06-22-glass-editor-design.md).
+**Early.** Published as [`@nakshatra.io/clean-editor`](https://www.npmjs.com/package/@nakshatra.io/clean-editor) — the public API below reflects the current contract and may still evolve before `1.0`. Full design notes live in [`docs/superpowers/specs/2026-06-22-glass-editor-design.md`](docs/superpowers/specs/2026-06-22-glass-editor-design.md).
 
 ## Install
 
@@ -46,7 +48,7 @@ The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather 
 # peers (in the host app)
 npm install react react-dom @tiptap/react @tiptap/core @tiptap/pm
 
-# the editor — once published:
+# the editor
 npm install @nakshatra.io/clean-editor
 ```
 
