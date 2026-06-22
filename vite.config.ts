@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import { copyFileSync } from "node:fs";
+import pkg from "./package.json";
 
 /** Copies src/styles.css → dist/styles.css after bundle is written. */
 function copyCss(): import("vite").Plugin {
@@ -14,6 +15,7 @@ function copyCss(): import("vite").Plugin {
 }
 
 export default defineConfig({
+  define: { __PKG_VERSION__: JSON.stringify(pkg.version) },
   plugins: [react(), dts({ rollupTypes: true, tsconfigPath: "./tsconfig.build.json" }), copyCss()],
   build: {
     lib: { entry: "src/index.ts", formats: ["es"], fileName: "index" },

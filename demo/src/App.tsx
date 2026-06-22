@@ -73,15 +73,21 @@ export default function App() {
       </header>
 
       <main className="demo-main">
-        <div className="editor-wrapper">
-          <CleanEditor
-            value={doc}
-            onChange={setDoc}
-            ai={mockAi}
-            theme={theme}
-            placeholder="Write something, or press / for blocks…"
-            liveDoc={showJson}
-          />
+        <div className={`demo-split${showJson ? " demo-split--open" : ""}`}>
+          <div className="editor-wrapper">
+            <CleanEditor
+              value={doc}
+              onChange={setDoc}
+              ai={mockAi}
+              theme={theme}
+              placeholder="Write something, or press / for blocks…"
+            />
+          </div>
+          {showJson && (
+            <div className="demo-json">
+              <pre>{JSON.stringify(doc, null, 2)}</pre>
+            </div>
+          )}
         </div>
       </main>
     </div>

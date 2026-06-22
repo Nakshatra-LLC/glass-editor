@@ -1,2 +1,3 @@
 import { VERSION } from "./index";
-test("exports a version", () => { expect(VERSION).toBe("0.1.0"); });
+import pkg from "../package.json";
+test("VERSION matches package.json", () => { expect(VERSION).toBe(pkg.version); });

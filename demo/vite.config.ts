@@ -1,6 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
+// The demo imports the library SOURCE (alias below), which references the
+// build-time `__PKG_VERSION__` define. Consumers get it from the built dist,
+// but the source-aliased demo must define it here too (root package.json).
+import libPkg from "../package.json";
 
 // GitHub Pages' configure-pages outputs base_path WITHOUT a trailing slash
 // (e.g. "/clean-editor"). Vite's `import.meta.env.BASE_URL` is used as a raw
@@ -24,5 +28,6 @@ export default defineConfig({
     ],
     dedupe: ["react", "react-dom", "@tiptap/core", "@tiptap/pm", "@tiptap/react"],
   },
+  define: { __PKG_VERSION__: JSON.stringify(libPkg.version) },
   base,
 });

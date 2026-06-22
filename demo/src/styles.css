@@ -87,3 +87,43 @@ html[data-demo-theme="dark"] .editor-wrapper { background: #0f0f14; border-color
 html[data-demo-theme="dark"] .demo-header h1 { color: #e8e8ea; }
 html[data-demo-theme="dark"] .demo-header p { color: #9aa0aa; }
 html[data-demo-theme="dark"] .demo-header kbd { background: #1b1c25; border-color: #2a2b35; color: #e8e8ea; }
+
+/* Split layout */
+.demo-split {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.demo-split--open {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+  gap: 1rem;
+}
+
+@media (max-width: 860px) {
+  .demo-split--open {
+    grid-template-columns: 1fr;
+  }
+}
+
+.demo-json {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #f3f4f6;
+  overflow-y: auto;
+  max-height: 70vh;
+  font-family: monospace;
+}
+
+.demo-json pre {
+  margin: 0;
+  font-size: 0.78rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+html[data-demo-theme="dark"] .demo-json {
+  background: #0f0f14;
+  border-color: #2a2b35;
+  color: #e8e8ea;
+}
