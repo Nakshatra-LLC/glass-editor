@@ -24,7 +24,7 @@ export function LinkInput({ editor, onClose }: { editor: Editor; onClose: () => 
         }}
       />
       <button type="button" className="glass-bubble__btn" onMouseDown={(e) => { e.preventDefault(); apply(); }}>Apply</button>
-      {editor.isActive?.("link") && (
+      {editor.isActive("link") && (
         <button type="button" className="glass-bubble__btn" onMouseDown={(e) => { e.preventDefault(); remove(); }}>Unlink</button>
       )}
     </div>
