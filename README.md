@@ -13,6 +13,20 @@ The polished "Notion-like" TipTap editors are Pro/Cloud. Glass Editor replicates
 **free MIT primitives** (StarterKit + `@tiptap/suggestion` + a few extensions) and owns the
 result, so it can be shared across apps via a single dependency-injected component.
 
+## Usage
+
+```tsx
+import { GlassEditor, type AiAdapter } from "@nakshatra/glass-editor";
+import "@nakshatra/glass-editor/styles.css";
+
+const ai: AiAdapter = {
+  continue: (text) => myBackend.continue(text),
+  ask: (text, instruction) => myBackend.ask(text, instruction),
+};
+
+<GlassEditor value={doc} onChange={setDoc} ai={ai} />
+```
+
 ## License
 
 MIT © Nakshatra LLC
