@@ -87,17 +87,25 @@ Source lives under `src/`. Each file has one responsibility:
 | -------------------------- | -------------------------------------------------------------------------- |
 | `index.ts`                 | Public entry point. Re-exports the whole API; `VERSION`.                    |
 | `extensions.ts`            | `defaultExtensions(opts?)` — the OSS TipTap extension set.                  |
-| `slash/items.ts`           | `SlashItem` type + `defaultSlashItems` (headings, lists, quote, code, …).   |
+| `slash/items.ts`           | `SlashItem` type + `defaultSlashItems` + `filterSlashItems` (headings, lists, quote, code, …). |
+| `slash/SlashCommand.ts`    | TipTap `@tiptap/suggestion` wiring — `createSlashCommand(items)`.           |
+| `slash/icons.tsx`          | Icon components (`ReactNode`) used by default slash items.                  |
 | `slash/SlashMenu.tsx`      | Controlled, grouped slash-menu UI; runs the clicked item and closes.        |
-| `ai/aiSlashItems.ts`       | `AiAdapter` type + `aiSlashItems(ai)` — "Continue Writing" / "Ask AI".      |
-| `GlassEditor.tsx`          | The main component. Composes extensions, bubble menu, and slash menu.       |
-| `styles.css`               | Structural CSS hooks only; hosts supply the theme.                          |
+| `bubble/items.ts`          | `BubbleItem` type + `defaultBubbleItems` (Bold, Italic, Link).              |
+| `bubble/BubbleMenu.tsx`    | Selection bubble toolbar; merges `defaultBubbleItems` + consumer `bubbleItems`. |
+| `bubble/LinkInput.tsx`     | Inline link-URL input shown inside the bubble.                              |
+| `gutter/Gutter.tsx`        | `＋` gutter button — tracks cursor block and opens the slash popup.         |
+| `positioning.ts`           | `clampPopup(rect, viewport)` — keeps slash popup inside the viewport.       |
+| `ai/aiSlashItems.ts`       | `AiAdapter` type + `aiSlashItems(ai, hooks?)` — "Continue Writing" / "Ask AI". |
+| `GlassEditor.tsx`          | The main component. Composes extensions, bubble menu, gutter, and slash.    |
+| `styles.css`               | CSS-variable theme (light/dark auto-switch) + structural layout hooks.      |
 | `guards.test.ts`           | Architecture guard tests — enforce the [guarded patterns](#guarded-patterns-do-not-break). |
 
 Design rules:
 
-- **Injection over coupling.** The AI adapter, extra slash items, and extensions are all props. Defaults are provided but always overridable.
+- **Injection over coupling.** The AI adapter, extra slash items, extra bubble items, and extensions are all props. Defaults are provided but always overridable.
 - **Slash-item merge order** in `GlassEditor` is `[...(ai ? aiSlashItems(ai) : []), ...defaultSlashItems, ...(slashItems ?? [])]`.
+- **Bubble-item merge order** in `GlassEditor` is `[...defaultBubbleItems, ...(bubbleItems ?? [])]`.
 - **Controlled value.** `GlassEditor` syncs external `value` changes into the editor (guarded against echo loops) and always calls the latest `onChange` via a ref.
 - Co-locate each module's `*.test.ts(x)` beside it.
 

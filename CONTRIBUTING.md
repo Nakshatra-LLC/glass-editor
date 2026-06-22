@@ -72,3 +72,20 @@ change is deliberate — update the guard test and explain why in your PR. See
 
 By contributing, you agree that your contributions are licensed under the
 project's [MIT License](LICENSE).
+
+## Backlog / where to help
+
+These are deliberately left for v2 / community contributions. Each should build
+on the existing hooks (`slashItems`, `bubbleItems`, `extensions`, theme
+variables) without changing the core. Browse
+[issues labeled `help wanted` / `good first issue`](https://github.com/Nakshatra-LLC/glass-editor/issues)
+to claim one (open an issue first if it doesn't exist):
+
+- **Drag-to-reorder blocks** — a custom OSS drag handle in the gutter (TipTap's
+  is Pro, so it must be implemented from scratch; the `.glass-gutter__drag` slot
+  is reserved for it).
+- **Rich AI selection menus** — Adjust Tone, Fix grammar, Make longer/shorter,
+  Simplify, Emojify, Summarize, Translate — all as `bubbleItems` / `slashItems`
+  that call `ai.ask` with preset instructions.
+- **Slash filtering polish** — fuzzy match, recents, per-group ordering.
+- **Markdown import/export** and **image upload** helpers.

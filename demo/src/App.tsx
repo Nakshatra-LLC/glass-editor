@@ -43,6 +43,7 @@ export default function App() {
   return (
     <div className="demo-layout">
       <header className="demo-header">
+        <img src="/mark.svg" alt="" width={36} height={36} className="demo-logo" />
         <h1>@nakshatra/glass-editor</h1>
         <p>Runnable demo — Vite + React. Press <kbd>/</kbd> for blocks, AI adapter included.</p>
       </header>

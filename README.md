@@ -31,7 +31,7 @@ The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather 
 
 ## Features
 
-- **Slash-command menu** — press `/` (or click the **＋** button) for a grouped command menu: Text, Heading 1–3, bullet / numbered / to-do lists, quote, code, and divider.
+- **Slash-command menu** — press `/` for a caret-anchored command popup — type to filter, `↑/↓`/`Enter` to choose; a `＋` gutter button opens it too.
 - **Injected AI adapter** — provide an adapter and the slash menu gains **Continue Writing** and **Ask AI**, which insert the result at the cursor. Omit it and those items simply don't appear.
 - **Selection bubble menu** — bold / italic / link on text selection.
 - **Controlled** — `value` is a ProseMirror JSON doc; `onChange(doc)` fires on every edit. Your app owns persistence, and external `value` updates sync back into the editor.
@@ -41,8 +41,6 @@ The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather 
 ## Status
 
 **Early.** The public API below reflects the current contract. The package is **not yet published to npm** — consume it via a local link during development; npm publish lands once the API stabilizes. Full design notes live in [`docs/superpowers/specs/2026-06-22-glass-editor-design.md`](docs/superpowers/specs/2026-06-22-glass-editor-design.md).
-
-A caret-anchored slash popup with filtering and keyboard navigation (via `@tiptap/suggestion`) is the planned next step — see [Roadmap](#roadmap).
 
 ## Install
 
@@ -123,14 +121,24 @@ export type SlashItem = {
   id: string;
   label: string;
   group?: string;            // e.g. "AI" | "Blocks"
-  keywords?: string[];       // reserved for filtering (planned)
+  keywords?: string[];       // used for filtering
+  icon?: ReactNode;          // optional icon shown in the popup
   run: (editor: Editor) => void | Promise<void>;
+};
+
+export type BubbleItem = {
+  id: string;
+  label: string;
+  run: (editor: Editor) => void;
+  isActive?: (editor: Editor) => boolean;
 };
 
 export function GlassEditor(props: GlassEditorProps): JSX.Element;
 export function defaultExtensions(opts?: { placeholder?: string }): Extension[];
 export const defaultSlashItems: SlashItem[];
+export const defaultBubbleItems: BubbleItem[];
 export function aiSlashItems(ai: AiAdapter): SlashItem[];
+export function filterSlashItems(items: SlashItem[], query: string): SlashItem[];
 export const VERSION: string;
 ```
 
@@ -143,6 +151,7 @@ export const VERSION: string;
 | `ai` | `AiAdapter` | — | Optional. Enables the **Continue Writing** / **Ask AI** slash items. |
 | `extensions` | `Extension[]` | `defaultExtensions()` | Replace the default extension set. |
 | `slashItems` | `SlashItem[]` | `defaultSlashItems` | Appended to the defaults. |
+| `bubbleItems` | `BubbleItem[]` | `defaultBubbleItems` | Appended to the default Bold/Italic/Link bubble; the seam for AI selection menus. |
 | `placeholder` | `string` | — | Empty-state placeholder text. |
 | `className` | `string` | — | Class on the editor root. |
 | `editable` | `boolean` | `true` | Toggle read-only mode. |
@@ -151,10 +160,29 @@ export const VERSION: string;
 
 ## Theming
 
-Glass Editor ships **structural, unstyled CSS** with stable class hooks — no bundled design system. Theme it from your app (e.g. Tailwind) against hooks like `.glass-editor` and `.glass-slash`. Import the base structural styles once:
+Glass Editor ships a **CSS-variable theme** that switches automatically between light and dark via `prefers-color-scheme`. All tokens are overridable on `.glass-editor`:
+
+| Token | Default (light) | Role |
+| --- | --- | --- |
+| `--glass-bg` | `#ffffff` | Editor surface background |
+| `--glass-fg` | `#111827` | Editor text colour |
+| `--glass-accent` | `#6366f1` | Focus rings, active states |
+| `--glass-radius` | `8px` | Corner radius for containers |
+| `--glass-popup-bg` | `#ffffff` | Slash popup / bubble background |
+
+Import the base styles once (sets the variables + structural layout):
 
 ```ts
 import "@nakshatra/glass-editor/styles.css";
+```
+
+Override any token from your app's CSS:
+
+```css
+.glass-editor {
+  --glass-accent: #0ea5e9;
+  --glass-radius: 4px;
+}
 ```
 
 ## Architecture
@@ -174,10 +202,12 @@ Built with **Vite** in library mode (ESM + `.d.ts` via `vite-plugin-dts`, peers 
 
 ## Roadmap
 
-Designed to add later without breaking consumers:
+Designed to add later without breaking consumers — community / v2:
 
-- Caret-anchored slash popup with **filtering** and **keyboard navigation** (`@tiptap/suggestion`).
-- Markdown import/export, image upload helpers, and additional default blocks.
+- **Rich AI action menus** — Adjust Tone, Summarize, Translate, Fix grammar — all as `bubbleItems` / `slashItems` that call `ai.ask` with preset instructions.
+- **Drag-to-reorder blocks** — a custom OSS drag handle in the gutter (TipTap's is Pro).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md#backlog--where-to-help) for the detailed backlog and how to claim an item.
 
 ## Out of scope (v1)
 
