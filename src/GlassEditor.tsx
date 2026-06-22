@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useEditor, EditorContent, BubbleMenu, type Content, type Extension, type JSONContent } from "@tiptap/react";
 import { defaultExtensions } from "./extensions";
 import { defaultSlashItems, type SlashItem } from "./slash/items";
@@ -27,11 +27,15 @@ export function GlassEditor({ value, onChange, ai, extensions, slashItems, place
   // Reset the slash menu when the AI adapter's presence changes so the menu reflects the new item set.
   // Using `hasAi` (not `ai`) avoids closing the menu on every render when a parent passes a fresh adapter object.
   useEffect(() => { setSlashOpen(false); }, [hasAi]);
+  // Keep a ref to the latest onChange so onUpdate always calls the current handler
+  // without recreating the editor when the prop changes (avoids stale-closure bug).
+  const onChangeRef = useRef(onChange);
+  useEffect(() => { onChangeRef.current = onChange; }, [onChange]);
   const editor = useEditor({
     editable,
     extensions: extensions ?? defaultExtensions({ placeholder }),
     content: value as Content,
-    onUpdate: ({ editor }) => onChange(editor.getJSON()),
+    onUpdate: ({ editor }) => onChangeRef.current(editor.getJSON()),
     editorProps: { attributes: { class: "glass-editor__content" } },
   });
   // Sync external value changes into the editor after mount (controlled component).
