@@ -43,7 +43,8 @@
     "@tiptap/extension-placeholder": "^2.8.0",
     "@tiptap/extension-task-item": "^2.8.0",
     "@tiptap/extension-task-list": "^2.8.0",
-    "@tiptap/starter-kit": "^2.8.0"
+    "@tiptap/starter-kit": "^2.8.0",
+    "@tiptap/suggestion": "^2.8.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
