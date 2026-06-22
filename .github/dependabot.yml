@@ -8,6 +8,10 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
+      tiptap:
+        # All @tiptap/* minor/patch updates land in one PR (kept in lockstep).
+        patterns:
+          - "@tiptap/*"
     ignore:
       # Peer-dependency singletons: bumping these can break consumer dedup.
       # Update intentionally and verify the peer ranges by hand.
@@ -16,8 +20,17 @@ updates:
       - dependency-name: "@tiptap/core"
       - dependency-name: "@tiptap/pm"
       - dependency-name: "@tiptap/react"
+      # All @tiptap/* extensions must stay on the v2 line with the core/peers.
+      # A v3 upgrade is a deliberate migration, not an automated bump.
+      - dependency-name: "@tiptap/*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
+    groups:
+      # All GitHub Actions updates land in a single PR.
+      github-actions:
+        patterns:
+          - "*"
