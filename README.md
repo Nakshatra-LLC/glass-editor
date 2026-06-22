@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/clean-editor-lockup-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/clean-editor-lockup-light.svg">
-  <img alt="Clean Editor" src="assets/clean-editor-lockup-light.svg" width="340">
+  <img alt="Clean Editor" src="https://raw.githubusercontent.com/Nakshatra-LLC/clean-editor/main/assets/clean-editor-social.png" width="640">
 </picture>
 
 <br/>

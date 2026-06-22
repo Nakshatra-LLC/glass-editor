@@ -84,10 +84,13 @@ Commit the generated `.changeset/*.md` file with your PR. The changesets/action 
 
 **First-time maintainer setup:**
 
-1. Confirm the `@nakshatra.io` npm scope exists and is public (register at npmjs.com under the `nakshatra.io` username if not already done).
-2. Create an npm **Automation token** (or Granular Access Token scoped to `@nakshatra.io/clean-editor`) at npmjs.com → Access Tokens.
-3. Add it as `NPM_TOKEN` under the GitHub repo → Settings → Secrets and variables → Actions → New repository secret.
-4. Enable GitHub Actions write permissions: Settings → Actions → General → Workflow permissions → "Read and write permissions".
+Publishing uses **npm Trusted Publishing (OIDC)** — there is **no `NPM_TOKEN` secret**. CI authenticates to npm via GitHub's OIDC identity.
+
+1. Confirm the `@nakshatra.io` npm scope exists and is public.
+2. On npm, open the package → **Settings → Trusted Publisher → GitHub Actions** and set: org/user `Nakshatra-LLC`, repository `clean-editor`, workflow filename `release.yml`, allowed action **`npm publish`** (leave Environment empty to match the workflow).
+3. Enable GitHub Actions write permissions: Settings → Actions → General → Workflow permissions → "Read and write permissions".
+
+The release workflow already requests `id-token: write` and sets `NPM_CONFIG_PROVENANCE=true`, so published versions carry signed provenance automatically.
 
 ## License
 
