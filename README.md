@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/glass-editor-lockup-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/glass-editor-lockup-light.svg">
-  <img alt="Glass Editor" src="assets/glass-editor-lockup-light.svg" width="340">
+  <img alt="Clean Editor" src="assets/glass-editor-lockup-light.svg" width="340">
 </picture>
 
 <br/>
@@ -21,13 +21,13 @@
 
 ---
 
-Glass Editor brings a polished, "Notion-like" TipTap editing experience using **free MIT primitives** — TipTap's StarterKit plus a handful of free extensions — so you own the result and can share one editor across multiple products via a single dependency-injected component.
+Clean Editor brings a polished, "Notion-like" TipTap editing experience using **free MIT primitives** — TipTap's StarterKit plus a handful of free extensions — so you own the result and can share one editor across multiple products via a single dependency-injected component.
 
 The editor knows nothing about your backend, your content model, or your AI provider. You inject all of those. That keeps it reusable: the same component powers a CMS, a document builder, or anything else, each supplying its own adapter.
 
 ## Why
 
-The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather than pay per seat or scatter divergent editors across repos, Glass Editor builds that UX once from free primitives and publishes it as a standalone library. The authoring and AI investment becomes reusable, and there's a single editor to maintain.
+The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather than pay per seat or scatter divergent editors across repos, Clean Editor builds that UX once from free primitives and publishes it as a standalone library. The authoring and AI investment becomes reusable, and there's a single editor to maintain.
 
 ## Features
 
@@ -51,7 +51,7 @@ The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather 
 npm install react react-dom @tiptap/react @tiptap/core @tiptap/pm
 
 # the editor — once published:
-npm install @nakshatra.io/glass-editor
+npm install @nakshatra.io/clean-editor
 ```
 
 During development, link it locally instead:
@@ -60,7 +60,7 @@ During development, link it locally instead:
 // host package.json
 {
   "dependencies": {
-    "@nakshatra.io/glass-editor": "link:../glass-editor"
+    "@nakshatra.io/clean-editor": "link:../glass-editor"
   }
 }
 ```
@@ -69,9 +69,9 @@ During development, link it locally instead:
 
 ```tsx
 import { useState } from "react";
-import { GlassEditor } from "@nakshatra.io/glass-editor";
+import { CleanEditor } from "@nakshatra.io/clean-editor";
 import type { JSONContent } from "@tiptap/react";
-import "@nakshatra.io/glass-editor/styles.css";
+import "@nakshatra.io/clean-editor/styles.css";
 
 const empty: JSONContent = { type: "doc", content: [] };
 
@@ -79,7 +79,7 @@ export function MyEditor() {
   const [doc, setDoc] = useState<JSONContent>(empty);
 
   return (
-    <GlassEditor
+    <CleanEditor
       value={doc}
       onChange={setDoc}
       placeholder="Type / for commands…"
@@ -93,14 +93,14 @@ export function MyEditor() {
 The editor never imports `fetch` or a provider. You supply an `AiAdapter`; where the network call lives is entirely up to your app:
 
 ```tsx
-import { GlassEditor, type AiAdapter } from "@nakshatra.io/glass-editor";
+import { CleanEditor, type AiAdapter } from "@nakshatra.io/clean-editor";
 
 const ai: AiAdapter = {
   continue: (context) => myBackend.continue(context),
   ask: (context, instruction) => myBackend.ask(context, instruction),
 };
 
-<GlassEditor value={doc} onChange={setDoc} ai={ai} />;
+<CleanEditor value={doc} onChange={setDoc} ai={ai} />;
 ```
 
 If the adapter rejects, the slash action inserts nothing and the editor stays usable — it never throws into your app.
@@ -134,7 +134,7 @@ export type BubbleItem = {
   isActive?: (editor: Editor) => boolean;
 };
 
-export function GlassEditor(props: GlassEditorProps): JSX.Element;
+export function CleanEditor(props: CleanEditorProps): JSX.Element;
 export function defaultExtensions(opts?: { placeholder?: string }): Extension[];
 export const defaultSlashItems: SlashItem[];
 export const defaultBubbleItems: BubbleItem[];
@@ -143,7 +143,7 @@ export function filterSlashItems(items: SlashItem[], query: string): SlashItem[]
 export const VERSION: string;
 ```
 
-### `<GlassEditor>` props
+### `<CleanEditor>` props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -162,28 +162,28 @@ export const VERSION: string;
 
 ## Theming
 
-Glass Editor ships a **CSS-variable theme** that switches automatically between light and dark via `prefers-color-scheme`. All tokens are overridable on `.glass-editor`:
+Clean Editor ships a **CSS-variable theme** that switches automatically between light and dark via `prefers-color-scheme`. All tokens are overridable on `.clean-editor`:
 
 | Token | Default (light) | Role |
 | --- | --- | --- |
-| `--glass-bg` | `#ffffff` | Editor surface background |
-| `--glass-fg` | `#111827` | Editor text colour |
-| `--glass-accent` | `#6366f1` | Focus rings, active states |
-| `--glass-radius` | `8px` | Corner radius for containers |
-| `--glass-popup-bg` | `#ffffff` | Slash popup / bubble background |
+| `--clean-bg` | `#ffffff` | Editor surface background |
+| `--clean-fg` | `#111827` | Editor text colour |
+| `--clean-accent` | `#6366f1` | Focus rings, active states |
+| `--clean-radius` | `8px` | Corner radius for containers |
+| `--clean-popup-bg` | `#ffffff` | Slash popup / bubble background |
 
 Import the base styles once (sets the variables + structural layout):
 
 ```ts
-import "@nakshatra.io/glass-editor/styles.css";
+import "@nakshatra.io/clean-editor/styles.css";
 ```
 
 Override any token from your app's CSS:
 
 ```css
-.glass-editor {
-  --glass-accent: #0ea5e9;
-  --glass-radius: 4px;
+.clean-editor {
+  --clean-accent: #0ea5e9;
+  --clean-radius: 4px;
 }
 ```
 
@@ -191,7 +191,7 @@ Override any token from your app's CSS:
 
 | Path | Responsibility |
 | --- | --- |
-| `src/GlassEditor.tsx` | The React component — composes extensions, bubble menu, gutter, and slash wiring with controlled `value`. |
+| `src/CleanEditor.tsx` | The React component — composes extensions, bubble menu, gutter, and slash wiring with controlled `value`. |
 | `src/extensions.ts` | `defaultExtensions(opts?)` — the OSS TipTap extension set (StarterKit + free additions). |
 | `src/index.ts` | Public entry point; re-exports the API and `VERSION`. |
 | `src/slash/items.tsx` | `SlashItem` type + `defaultSlashItems` + `filterSlashItems` (headings, lists, quote, code, …). |

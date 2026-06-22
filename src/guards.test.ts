@@ -1,5 +1,5 @@
 /**
- * Architecture guard tests for @nakshatra.io/glass-editor.
+ * Architecture guard tests for @nakshatra.io/clean-editor.
  *
  * These tests enforce the four invariants documented in AGENTS.md
  * § "Guarded patterns (do not break)". If a test here fails, you
@@ -155,19 +155,19 @@ test("stable public API: runtime exports and type re-exports are present in inde
   /**
    * We read src/index.ts as text rather than doing a runtime import to avoid
    * jsdom environment issues from mounting TipTap/ProseMirror in a guard test.
-   * The type-level exports (GlassEditorProps, SlashItem, AiAdapter) cannot be
+   * The type-level exports (CleanEditorProps, SlashItem, AiAdapter) cannot be
    * checked at runtime anyway; the regular exports are validated here by text
    * assertion and are also confirmed passing through the existing test suite.
    *
-   * Note: the full runtime export values (GlassEditor, defaultExtensions, …)
-   * are independently validated by their own unit tests (GlassEditor.test.tsx,
+   * Note: the full runtime export values (CleanEditor, defaultExtensions, …)
+   * are independently validated by their own unit tests (CleanEditor.test.tsx,
    * extensions.test.ts, items.test.ts, etc.).
    */
   const indexSrc = readFileSync(join(ROOT, "src", "index.ts"), "utf-8");
 
   // Runtime-value exports that consumers will import
   const REQUIRED_VALUE_EXPORTS = [
-    "GlassEditor",
+    "CleanEditor",
     "defaultExtensions",
     "defaultSlashItems",
     "aiSlashItems",
@@ -178,7 +178,7 @@ test("stable public API: runtime exports and type re-exports are present in inde
 
   // Type exports that must survive the public surface
   const REQUIRED_TYPE_EXPORTS = [
-    "GlassEditorProps",
+    "CleanEditorProps",
     "SlashItem",
     "AiAdapter",
     "BubbleItem",

@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@nakshatra.io/glass-editor-demo"]
+  "ignore": ["@nakshatra.io/clean-editor-demo"]
 }

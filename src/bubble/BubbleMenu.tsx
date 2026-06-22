@@ -3,10 +3,10 @@ import { BubbleMenu, type Editor } from "@tiptap/react";
 import type { BubbleItem } from "./items";
 import { LinkInput } from "./LinkInput";
 
-export function GlassBubbleMenu({ editor, items }: { editor: Editor; items: BubbleItem[] }) {
+export function CleanBubbleMenu({ editor, items }: { editor: Editor; items: BubbleItem[] }) {
   const [linkOpen, setLinkOpen] = useState(false);
   return (
-    <BubbleMenu editor={editor} className="glass-bubble">
+    <BubbleMenu editor={editor} className="clean-bubble">
       {linkOpen ? (
         <LinkInput editor={editor} onClose={() => setLinkOpen(false)} />
       ) : (
@@ -15,7 +15,7 @@ export function GlassBubbleMenu({ editor, items }: { editor: Editor; items: Bubb
             key={item.id}
             type="button"
             aria-label={item.label}
-            className={`glass-bubble__btn${item.isActive?.(editor) ? " is-active" : ""}`}
+            className={`clean-bubble__btn${item.isActive?.(editor) ? " is-active" : ""}`}
             onMouseDown={(e) => {
               e.preventDefault();
               if (item.id === "link") setLinkOpen(true);

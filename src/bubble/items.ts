@@ -9,7 +9,7 @@ export type BubbleItem = {
   run: (editor: Editor) => void | Promise<void>;
 };
 
-// `link` is handled specially by GlassBubbleMenu (opens the inline LinkInput).
+// `link` is handled specially by CleanBubbleMenu (opens the inline LinkInput).
 export const defaultBubbleItems: BubbleItem[] = [
   { id: "bold", label: "Bold", isActive: (e) => e.isActive("bold"), run: (e) => { e.chain().focus().toggleBold().run(); } },
   { id: "italic", label: "Italic", isActive: (e) => e.isActive("italic"), run: (e) => { e.chain().focus().toggleItalic().run(); } },

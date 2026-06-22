@@ -1,5 +1,5 @@
 {
-  "name": "@nakshatra.io/glass-editor-demo",
+  "name": "@nakshatra.io/clean-editor-demo",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nakshatra.io/glass-editor": "workspace:*"
+    "@nakshatra.io/clean-editor": "workspace:*"
   },
   "devDependencies": {
     "@tiptap/core": "^2.8.0",

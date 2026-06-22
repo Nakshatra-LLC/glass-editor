@@ -30,7 +30,7 @@ time to release a fix before any public disclosure.
 
 ## Scope notes
 
-`@nakshatra.io/glass-editor` renders ProseMirror/TipTap content. Consumers are
+`@nakshatra.io/clean-editor` renders ProseMirror/TipTap content. Consumers are
 responsible for sanitizing untrusted document content on render (e.g. validating
 link/image URL schemes) — see the README and AGENTS.md. Reports about unsanitized
 host-provided content are usually integration issues rather than library

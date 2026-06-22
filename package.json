@@ -1,5 +1,5 @@
 {
-  "name": "@nakshatra.io/glass-editor",
+  "name": "@nakshatra.io/clean-editor",
   "version": "0.1.0",
   "description": "WYSIWYG editor built with TipTap StarterKit (OSS) — pluggable blocks, slash menu, injected AI adapter.",
   "license": "MIT",

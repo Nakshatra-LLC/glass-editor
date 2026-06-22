@@ -24,16 +24,16 @@ export function AskAiInput({
       editor.commands.insertContent(result);
       onClose();
     } catch (err) {
-      console.error("glass-editor: AI request failed", err);
+      console.error("clean-editor: AI request failed", err);
       setPending(false);
     }
   };
   return (
-    <div className="glass-askai">
+    <div className="clean-askai">
       <input
         autoFocus
         aria-label={placeholder}
-        className="glass-askai__input"
+        className="clean-askai__input"
         placeholder={placeholder}
         value={value}
         disabled={pending}
@@ -45,7 +45,7 @@ export function AskAiInput({
       />
       <button
         aria-label="Submit"
-        className="glass-askai__submit"
+        className="clean-askai__submit"
         disabled={pending}
         onMouseDown={(e) => { e.preventDefault(); void submit(); }}
       >

@@ -5,7 +5,7 @@ name: Release
 #   - Publishes to npm when that PR is merged (no changesets remain).
 #
 # REQUIRED repo secret: NPM_TOKEN — create an npm Automation/Granular Access Token
-# scoped to @nakshatra.io/glass-editor and add it under
+# scoped to @nakshatra.io/clean-editor and add it under
 # Settings → Secrets and variables → Actions → New repository secret.
 
 on:

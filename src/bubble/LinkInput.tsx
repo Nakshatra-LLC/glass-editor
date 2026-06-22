@@ -10,11 +10,11 @@ export function LinkInput({ editor, onClose }: { editor: Editor; onClose: () => 
   };
   const remove = () => { editor.chain().focus().extendMarkRange("link").unsetLink().run(); onClose(); };
   return (
-    <div className="glass-bubble__link">
+    <div className="clean-bubble__link">
       <input
         autoFocus
         aria-label="Link URL"
-        className="glass-bubble__input"
+        className="clean-bubble__input"
         value={url}
         placeholder="https://…"
         onChange={(e) => setUrl(e.target.value)}
@@ -23,9 +23,9 @@ export function LinkInput({ editor, onClose }: { editor: Editor; onClose: () => 
           if (e.key === "Escape") { e.preventDefault(); onClose(); }
         }}
       />
-      <button type="button" className="glass-bubble__btn" onMouseDown={(e) => { e.preventDefault(); apply(); }}>Apply</button>
+      <button type="button" className="clean-bubble__btn" onMouseDown={(e) => { e.preventDefault(); apply(); }}>Apply</button>
       {editor.isActive("link") && (
-        <button type="button" className="glass-bubble__btn" onMouseDown={(e) => { e.preventDefault(); remove(); }}>Unlink</button>
+        <button type="button" className="clean-bubble__btn" onMouseDown={(e) => { e.preventDefault(); remove(); }}>Unlink</button>
       )}
     </div>
   );

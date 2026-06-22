@@ -1,4 +1,4 @@
-# Contributing to @nakshatra.io/glass-editor
+# Contributing to @nakshatra.io/clean-editor
 
 Thanks for your interest in contributing! This guide covers the workflow. For the
 deeper "how this codebase works" reference (architecture, guarded patterns, AI
@@ -22,7 +22,7 @@ This is a library, so there is no app `dev` server. Two ways to work:
 - **Tests (primary):** `pnpm test` (or `pnpm test --watch` locally). We practice
   **TDD** — write a failing test first, then the implementation.
 - **Demo (interactive):** `pnpm demo` starts a local Vite app (`demo/`) that mounts
-  `<GlassEditor>` with a mock AI adapter so you can click around.
+  `<CleanEditor>` with a mock AI adapter so you can click around.
 
 ## Before you commit
 
@@ -85,7 +85,7 @@ Commit the generated `.changeset/*.md` file with your PR. The changesets/action 
 **First-time maintainer setup:**
 
 1. Confirm the `@nakshatra.io` npm scope exists and is public (register at npmjs.com under the `nakshatra.io` username if not already done).
-2. Create an npm **Automation token** (or Granular Access Token scoped to `@nakshatra.io/glass-editor`) at npmjs.com → Access Tokens.
+2. Create an npm **Automation token** (or Granular Access Token scoped to `@nakshatra.io/clean-editor`) at npmjs.com → Access Tokens.
 3. Add it as `NPM_TOKEN` under the GitHub repo → Settings → Secrets and variables → Actions → New repository secret.
 4. Enable GitHub Actions write permissions: Settings → Actions → General → Workflow permissions → "Read and write permissions".
 
@@ -103,7 +103,7 @@ variables) without changing the core. Browse
 to claim one (open an issue first if it doesn't exist):
 
 - **Drag-to-reorder blocks** — a custom OSS drag handle in the gutter (TipTap's
-  is Pro, so it must be implemented from scratch; the `.glass-gutter__drag` slot
+  is Pro, so it must be implemented from scratch; the `.clean-gutter__drag` slot
   is reserved for it).
 - **Rich AI selection menus** — Adjust Tone, Fix grammar, Make longer/shorter,
   Simplify, Emojify, Summarize, Translate — all as `bubbleItems` / `slashItems`

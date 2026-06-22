@@ -1,6 +1,6 @@
-# @nakshatra.io/glass-editor
+# @nakshatra.io/clean-editor
 
-How to work on the Glass Editor library. Written for humans and AI coding assistants.
+How to work on the Clean Editor library. Written for humans and AI coding assistants.
 
 > This file (`AGENTS.md`) is the **canonical** contributor and agent guide. `CLAUDE.md` and other tool-specific files are thin pointers to it. Edit this file, not the pointers.
 
@@ -8,9 +8,9 @@ How to work on the Glass Editor library. Written for humans and AI coding assist
 
 ---
 
-## What is Glass Editor
+## What is Clean Editor
 
-- A standalone, publishable WYSIWYG editor library: a `<GlassEditor>` React component built on OSS TipTap (StarterKit + free MIT extensions).
+- A standalone, publishable WYSIWYG editor library: a `<CleanEditor>` React component built on OSS TipTap (StarterKit + free MIT extensions).
 - Ships a `/` slash menu, default blocks, a bubble toolbar, and an **injected** AI adapter (Continue Writing / Ask AI).
 - **OSS only.** TipTap StarterKit and free MIT extensions. No Pro/Cloud packages, ever.
 - **Zero domain coupling.** No host backend or domain imports. AI, slash items, and extensions are injected by the consumer. The library knows nothing about any specific app.
@@ -92,21 +92,21 @@ Source lives under `src/`. Each file has one responsibility:
 | `slash/icons.tsx`          | Icon components (`ReactNode`) used by default slash items.                  |
 | `slash/SlashMenu.tsx`      | Controlled, grouped slash-menu UI; runs the clicked item and closes.        |
 | `bubble/items.ts`          | `BubbleItem` type + `defaultBubbleItems` (Bold, Italic, Link).              |
-| `bubble/BubbleMenu.tsx`    | Selection bubble toolbar; merges `defaultBubbleItems` + consumer `bubbleItems`. |
+| `bubble/BubbleMenu.tsx`    | Selection bubble toolbar; merges `defaultBubbleItems` + consumer `bubbleItems`. Exports `CleanBubbleMenu`. |
 | `bubble/LinkInput.tsx`     | Inline link-URL input shown inside the bubble.                              |
 | `gutter/Gutter.tsx`        | `＋` gutter button — tracks cursor block and opens the slash popup.         |
 | `positioning.ts`           | `clampPopup(rect, viewport)` — keeps slash popup inside the viewport.       |
 | `ai/aiSlashItems.tsx`      | `AiAdapter` type + `aiSlashItems(ai, hooks?)` — "Continue Writing" / "Ask AI". |
-| `GlassEditor.tsx`          | The main component. Composes extensions, bubble menu, gutter, and slash.    |
-| `styles.css`               | CSS-variable theme (light/dark auto-switch) + structural layout hooks.      |
+| `CleanEditor.tsx`          | The main component. Composes extensions, bubble menu, gutter, and slash.    |
+| `styles.css`               | CSS-variable theme (light/dark auto-switch) + structural layout hooks. Uses `.clean-*` class prefix. |
 | `guards.test.ts`           | Architecture guard tests — enforce the [guarded patterns](#guarded-patterns-do-not-break). |
 
 Design rules:
 
 - **Injection over coupling.** The AI adapter, extra slash items, extra bubble items, and extensions are all props. Defaults are provided but always overridable.
-- **Slash-item merge order** in `GlassEditor` is `[...(ai ? aiSlashItems(ai) : []), ...defaultSlashItems, ...(slashItems ?? [])]`.
-- **Bubble-item merge order** in `GlassEditor` is `[...defaultBubbleItems, ...(bubbleItems ?? [])]`.
-- **Controlled value.** `GlassEditor` syncs external `value` changes into the editor (guarded against echo loops) and always calls the latest `onChange` via a ref.
+- **Slash-item merge order** in `CleanEditor` is `[...(ai ? aiSlashItems(ai) : []), ...defaultSlashItems, ...(slashItems ?? [])]`.
+- **Bubble-item merge order** in `CleanEditor` is `[...defaultBubbleItems, ...(bubbleItems ?? [])]`.
+- **Controlled value.** `CleanEditor` syncs external `value` changes into the editor (guarded against echo loops) and always calls the latest `onChange` via a ref.
 - Co-locate each module's `*.test.ts(x)` beside it.
 
 ---
@@ -118,7 +118,7 @@ These invariants are the library's contract with consumers. `src/guards.test.ts`
 1. **Peer-dependency singletons.** `react`, `react-dom`, `@tiptap/core`, `@tiptap/pm`, `@tiptap/react` are declared in `peerDependencies` and **must not** also appear in `dependencies`. Duplicating ProseMirror/TipTap/React breaks editing.
 2. **OSS only.** No TipTap Pro/Cloud packages (`@tiptap-pro/*`, `@tiptap-cloud/*`) anywhere in `dependencies`.
 3. **Zero domain coupling.** Nothing under `src/` imports a host/app/backend package. Only React, `@tiptap/*`, ProseMirror, and relative `./` imports are allowed.
-4. **Stable public API.** `src/index.ts` exports the documented surface (`GlassEditor`, `GlassEditorProps`, `defaultExtensions`, `SlashItem`, `defaultSlashItems`, `AiAdapter`, `aiSlashItems`, `VERSION`). Removing or renaming an export is a breaking change.
+4. **Stable public API.** `src/index.ts` exports the documented surface (`CleanEditor`, `CleanEditorProps`, `defaultExtensions`, `SlashItem`, `defaultSlashItems`, `AiAdapter`, `aiSlashItems`, `VERSION`). Removing or renaming an export is a breaking change.
 
 ---
 

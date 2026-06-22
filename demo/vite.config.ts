@@ -7,11 +7,11 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: "@nakshatra.io/glass-editor/styles.css",
+        find: "@nakshatra.io/clean-editor/styles.css",
         replacement: resolve(__dirname, "../src/styles.css"),
       },
       {
-        find: "@nakshatra.io/glass-editor",
+        find: "@nakshatra.io/clean-editor",
         replacement: resolve(__dirname, "../src/index.ts"),
       },
     ],

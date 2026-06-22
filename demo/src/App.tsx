@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { JSONContent } from "@tiptap/react";
-import { GlassEditor, type AiAdapter } from "@nakshatra.io/glass-editor";
-import "@nakshatra.io/glass-editor/styles.css";
+import { CleanEditor, type AiAdapter } from "@nakshatra.io/clean-editor";
+import "@nakshatra.io/clean-editor/styles.css";
 
 type Theme = "light" | "dark";
 
@@ -25,7 +25,7 @@ const initialDoc: JSONContent = {
     {
       type: "heading",
       attrs: { level: 2 },
-      content: [{ type: "text", text: "Welcome to glass-editor" }],
+      content: [{ type: "text", text: "Welcome to clean-editor" }],
     },
     {
       type: "paragraph",
@@ -50,7 +50,7 @@ export default function App() {
       <header className="demo-header">
         <img src="/mark.svg" alt="" width={36} height={36} className="demo-logo" />
         <div>
-          <h1>@nakshatra.io/glass-editor</h1>
+          <h1>@nakshatra.io/clean-editor</h1>
           <p>Runnable demo — Vite + React. Press <kbd>/</kbd> for blocks, AI adapter included.</p>
         </div>
         <button
@@ -63,7 +63,7 @@ export default function App() {
 
       <main className="demo-main">
         <div className="editor-wrapper">
-          <GlassEditor
+          <CleanEditor
             value={doc}
             onChange={setDoc}
             ai={mockAi}

@@ -4,25 +4,25 @@ import { resolve } from "node:path";
 const css = readFileSync(resolve(__dirname, "styles.css"), "utf-8");
 
 test("styles.css defines the theme token contract", () => {
-  for (const token of ["--glass-bg", "--glass-fg", "--glass-accent", "--glass-popup-bg", "--glass-radius"]) {
+  for (const token of ["--clean-bg", "--clean-fg", "--clean-accent", "--clean-popup-bg", "--clean-radius"]) {
     expect(css).toContain(token);
   }
 });
 
 test("styles.css ships a dark-mode block and styles the bubble buttons", () => {
   expect(css).toContain("prefers-color-scheme: dark");
-  expect(css).toContain(".glass-bubble__btn");
-  expect(css).toContain(".glass-slash__item");
+  expect(css).toContain(".clean-bubble__btn");
+  expect(css).toContain(".clean-slash__item");
 });
 
 test("styles.css styles links with the accent color", () => {
-  expect(css).toContain(".glass-editor__content a");
+  expect(css).toContain(".clean-editor__content a");
 });
 
 test("styles.css supports data-theme forced dark override", () => {
   expect(css).toContain('[data-theme="dark"]');
 });
 
-test("styles.css defines the glass-askai-layer rule", () => {
-  expect(css).toContain(".glass-askai-layer");
+test("styles.css defines the clean-askai-layer rule", () => {
+  expect(css).toContain(".clean-askai-layer");
 });

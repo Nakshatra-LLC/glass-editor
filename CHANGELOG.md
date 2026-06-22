@@ -1,4 +1,4 @@
-# @nakshatra.io/glass-editor
+# @nakshatra.io/clean-editor
 
 ## 0.1.0
 

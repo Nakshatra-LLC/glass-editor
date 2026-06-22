@@ -90,7 +90,7 @@ importers:
 
   demo:
     dependencies:
-      '@nakshatra.io/glass-editor':
+      '@nakshatra.io/clean-editor':
         specifier: workspace:*
         version: link:..
     devDependencies:

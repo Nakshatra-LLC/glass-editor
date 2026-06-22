@@ -61,7 +61,7 @@ test("a rejecting onSubmit does not throw and inserts nothing", async () => {
   await userEvent.type(screen.getByRole("textbox"), "x");
   await userEvent.keyboard("{Enter}");
   expect(editor.inserted).toHaveLength(0);
-  expect(errorSpy).toHaveBeenCalledWith("glass-editor: AI request failed", expect.any(Error));
+  expect(errorSpy).toHaveBeenCalledWith("clean-editor: AI request failed", expect.any(Error));
   errorSpy.mockRestore();
 });
 

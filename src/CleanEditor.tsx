@@ -5,12 +5,12 @@ import { defaultSlashItems, type SlashItem } from "./slash/items";
 import { aiSlashItems, type AiAdapter } from "./ai/aiSlashItems";
 import { SlashMenu, reduceSlashKey } from "./slash/SlashMenu";
 import { clampPopup } from "./positioning";
-import { GlassBubbleMenu } from "./bubble/BubbleMenu";
+import { CleanBubbleMenu } from "./bubble/BubbleMenu";
 import { defaultBubbleItems, type BubbleItem } from "./bubble/items";
 import { AskAiInput } from "./ai/AskAiInput";
 import { Gutter } from "./gutter/Gutter";
 
-export type GlassEditorProps = {
+export type CleanEditorProps = {
   value: JSONContent;
   onChange: (doc: JSONContent) => void;
   /** AI adapter; enables Continue Writing / Ask AI. Pass a stable reference. */
@@ -24,9 +24,9 @@ export type GlassEditorProps = {
   theme?: "light" | "dark";
 };
 
-export function GlassEditor({
+export function CleanEditor({
   value, onChange, ai, extensions, slashItems, bubbleItems, placeholder, className, editable = true, theme,
-}: GlassEditorProps) {
+}: CleanEditorProps) {
   const [aiMode, setAiMode] = useState<null | "ask" | "continue">(null);
   const [gutterTop, setGutterTop] = useState<number | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -52,7 +52,7 @@ export function GlassEditor({
     }),
     content: value as Content,
     onUpdate: ({ editor }) => onChangeRef.current(editor.getJSON()),
-    editorProps: { attributes: { class: "glass-editor__content" } },
+    editorProps: { attributes: { class: "clean-editor__content" } },
   });
 
   useEffect(() => {
@@ -86,12 +86,12 @@ export function GlassEditor({
   const bubble = [...defaultBubbleItems, ...(bubbleItems ?? [])];
 
   return (
-    <div ref={rootRef} className={`glass-editor${className ? ` ${className}` : ""}`} {...(theme !== undefined ? { "data-theme": theme } : {})}>
+    <div ref={rootRef} className={`clean-editor${className ? ` ${className}` : ""}`} {...(theme !== undefined ? { "data-theme": theme } : {})}>
       {editor && <Gutter editor={editor} top={gutterTop} />}
-      {editor && <GlassBubbleMenu editor={editor} items={bubble} />}
+      {editor && <CleanBubbleMenu editor={editor} items={bubble} />}
       <EditorContent editor={editor} />
       {editor && aiMode && ai && (
-        <div className="glass-askai-layer">
+        <div className="clean-askai-layer">
           <AskAiInput
             editor={editor}
             placeholder={aiMode === "ask" ? "Ask AI what you want…" : "Continue writing… (Enter to generate)"}
@@ -145,7 +145,7 @@ function slashRenderer() {
       activeProps = props;
       index = 0;
       container = document.createElement("div");
-      const root = (props.editor.view.dom as HTMLElement).closest(".glass-editor") ?? document.body;
+      const root = (props.editor.view.dom as HTMLElement).closest(".clean-editor") ?? document.body;
       root.appendChild(container);
       component = new ReactRenderer(SlashMenu, {
         editor: props.editor,
