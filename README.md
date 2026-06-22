@@ -23,6 +23,21 @@ Clean Editor brings a polished, "Notion-like" TipTap editing experience using **
 
 The editor knows nothing about your backend, your content model, or your AI provider. You inject all of those. That keeps it reusable: the same component powers a CMS, a document builder, or anything else, each supplying its own adapter.
 
+## Demo
+
+▶ [Live demo](https://nakshatra-llc.github.io/clean-editor/)
+
+<table>
+<tr>
+<td align="center"><strong>Dark</strong></td>
+<td align="center"><strong>Light</strong></td>
+</tr>
+<tr>
+<td><img alt="Clean Editor — dark theme" src="assets/clean-editor-demo-dark.png" width="480"></td>
+<td><img alt="Clean Editor — light theme" src="assets/clean-editor-demo-light.png" width="480"></td>
+</tr>
+</table>
+
 ## Why
 
 The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather than pay per seat or scatter divergent editors across repos, Clean Editor builds that UX once from free primitives and publishes it as a standalone library. The authoring and AI investment becomes reusable, and there's a single editor to maintain.

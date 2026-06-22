@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { JSONContent } from "@tiptap/react";
 import { CleanEditor, type AiAdapter } from "@nakshatra.io/clean-editor";
 import "@nakshatra.io/clean-editor/styles.css";
@@ -44,6 +44,10 @@ export default function App() {
   const [theme, setTheme] = useState<Theme>(
     matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
   );
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-demo-theme", theme);
+  }, [theme]);
 
   return (
     <div className="demo-layout" data-demo-theme={theme}>
