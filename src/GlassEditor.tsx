@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useEditor, EditorContent, ReactRenderer, type Content, type Extension, type JSONContent } from "@tiptap/react";
 import { defaultExtensions } from "./extensions";
-import { defaultSlashItems, filterSlashItems, type SlashItem } from "./slash/items";
+import { defaultSlashItems, type SlashItem } from "./slash/items";
 import { aiSlashItems, type AiAdapter } from "./ai/aiSlashItems";
 import { SlashMenu, reduceSlashKey } from "./slash/SlashMenu";
 import { clampPopup } from "./positioning";
@@ -9,7 +9,6 @@ import { GlassBubbleMenu } from "./bubble/BubbleMenu";
 import { defaultBubbleItems, type BubbleItem } from "./bubble/items";
 import { AskAiInput } from "./ai/AskAiInput";
 import { Gutter } from "./gutter/Gutter";
-import type { Editor } from "@tiptap/react";
 
 export type GlassEditorProps = {
   value: JSONContent;
@@ -122,7 +121,7 @@ function slashRenderer() {
     onUpdate: (props: any) => { activeProps = props; index = Math.min(index, Math.max(0, props.items.length - 1)); renderList(props); },
     onKeyDown: (props: any) => {
       const r = reduceSlashKey(props.event.key, { index, count: current.length });
-      if (r.close) { activeProps?.command; props.event.preventDefault?.(); return false; }
+      if (r.close) { props.event.preventDefault?.(); return false; }
       if (r.select) { if (current[index]) activeProps.command(current[index]); return true; }
       if (r.handled) { index = r.index; renderList(activeProps); return true; }
       return false;

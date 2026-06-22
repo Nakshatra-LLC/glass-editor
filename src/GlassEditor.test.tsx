@@ -14,7 +14,7 @@ test("renders the doc content", async () => {
   expect(await screen.findByText("Hello")).toBeInTheDocument();
 });
 
-test("registers the slash command extension", async () => {
+test("mounts the editor container without throwing", async () => {
   let captured: any;
   render(<GlassEditor value={doc} onChange={() => {}} />);
   // The extension is present in the default set; assert via the editor's schema-independent marker:
