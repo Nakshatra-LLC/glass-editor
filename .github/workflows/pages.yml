@@ -32,11 +32,8 @@ jobs:
           node-version: 20
           cache: pnpm
 
-      - name: Install library dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Install demo dependencies
-        run: pnpm install --dir demo --frozen-lockfile
 
       - name: Configure Pages
         id: pages
