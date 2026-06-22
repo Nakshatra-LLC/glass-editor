@@ -26,7 +26,7 @@ export type GlassEditorProps = {
 export function GlassEditor({
   value, onChange, ai, extensions, slashItems, bubbleItems, placeholder, className, editable = true,
 }: GlassEditorProps) {
-  const [askOpen, setAskOpen] = useState(false);
+  const [aiMode, setAiMode] = useState<null | "ask" | "continue">(null);
   const [gutterTop, setGutterTop] = useState<number | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChange);
@@ -35,7 +35,10 @@ export function GlassEditor({
   // Latest item set, read lazily by the suggestion plugin so it always reflects current props.
   const itemsRef = useRef<SlashItem[]>([]);
   itemsRef.current = [
-    ...(ai ? aiSlashItems(ai, { onAsk: () => setAskOpen(true) }) : []),
+    ...(ai ? aiSlashItems(ai, {
+      onAsk: () => setAiMode("ask"),
+      onContinue: () => setAiMode("continue"),
+    }) : []),
     ...defaultSlashItems,
     ...(slashItems ?? []),
   ];
@@ -85,9 +88,16 @@ export function GlassEditor({
       {editor && <Gutter editor={editor} top={gutterTop} />}
       {editor && <GlassBubbleMenu editor={editor} items={bubble} />}
       <EditorContent editor={editor} />
-      {editor && askOpen && ai && (
+      {editor && aiMode && ai && (
         <div className="glass-askai-layer">
-          <AskAiInput editor={editor} ai={ai} onClose={() => setAskOpen(false)} />
+          <AskAiInput
+            editor={editor}
+            placeholder={aiMode === "ask" ? "Ask AI what you want…" : "Continue writing… (Enter to generate)"}
+            onSubmit={aiMode === "ask"
+              ? (instruction) => ai.ask(editor.getText(), instruction)
+              : () => ai.continue(editor.getText())}
+            onClose={() => setAiMode(null)}
+          />
         </div>
       )}
     </div>

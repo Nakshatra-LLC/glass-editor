@@ -1,8 +1,18 @@
 import { useState } from "react";
 import type { Editor } from "@tiptap/react";
-import type { AiAdapter } from "./aiSlashItems";
+import { IconSparkle } from "../slash/icons";
 
-export function AskAiInput({ editor, ai, onClose }: { editor: Editor; ai: AiAdapter; onClose: () => void }) {
+export function AskAiInput({
+  editor,
+  placeholder,
+  onSubmit,
+  onClose,
+}: {
+  editor: Editor;
+  placeholder: string;
+  onSubmit: (instruction: string) => Promise<string>;
+  onClose: () => void;
+}) {
   const [value, setValue] = useState("");
   const [pending, setPending] = useState(false);
   const submit = async () => {
@@ -10,7 +20,7 @@ export function AskAiInput({ editor, ai, onClose }: { editor: Editor; ai: AiAdap
     if (!instruction) { onClose(); return; }
     setPending(true);
     try {
-      const result = await ai.ask(editor.getText(), instruction);
+      const result = await onSubmit(instruction);
       editor.commands.insertContent(result);
       onClose();
     } catch (err) {
@@ -22,9 +32,9 @@ export function AskAiInput({ editor, ai, onClose }: { editor: Editor; ai: AiAdap
     <div className="glass-askai">
       <input
         autoFocus
-        aria-label="Ask AI what you want"
+        aria-label={placeholder}
         className="glass-askai__input"
-        placeholder="Ask AI what you want…"
+        placeholder={placeholder}
         value={value}
         disabled={pending}
         onChange={(e) => setValue(e.target.value)}
@@ -33,6 +43,14 @@ export function AskAiInput({ editor, ai, onClose }: { editor: Editor; ai: AiAdap
           if (e.key === "Escape") { e.preventDefault(); onClose(); }
         }}
       />
+      <button
+        aria-label="Submit"
+        className="glass-askai__submit"
+        disabled={pending}
+        onMouseDown={(e) => { e.preventDefault(); void submit(); }}
+      >
+        <IconSparkle />
+      </button>
     </div>
   );
 }
