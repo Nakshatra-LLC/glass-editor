@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
 import { GlassEditor } from "./GlassEditor";
 import type { JSONContent } from "@tiptap/react";
@@ -23,6 +24,37 @@ test("external value changes propagate into the editor after mount", async () =>
   rerender(<GlassEditor value={updatedDoc} onChange={() => {}} />);
   expect(await screen.findByText("Updated")).toBeInTheDocument();
   expect(screen.queryByText("Initial")).toBeNull();
+});
+
+test("calls the latest onChange handler, not a stale closure from mount time", async () => {
+  // jsdom's ProseMirror integration lacks elementFromPoint/getClientRects, so userEvent.type
+  // via mouse events is unreliable. Instead we dispatch a synthetic "input" event directly on
+  // the contenteditable to drive ProseMirror's DOMObserver → readDOMChange → onUpdate path,
+  // which is the same code path triggered by real typing.
+  const doc: JSONContent = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "Hello" }] }] };
+  const onChangeA = vi.fn();
+  const onChangeB = vi.fn();
+
+  const { rerender } = render(<GlassEditor value={doc} onChange={onChangeA} />);
+  // Wait for editor to mount
+  await screen.findByText("Hello");
+
+  // Swap to a different onChange handler
+  rerender(<GlassEditor value={doc} onChange={onChangeB} />);
+
+  // Mutate the DOM directly then fire an "input" event so ProseMirror's DOMObserver picks up
+  // the change and calls dispatchTransaction → onUpdate → onChange.
+  const contentEditable = document.querySelector(".glass-editor__content") as HTMLElement;
+  const paragraph = contentEditable.querySelector("p") as HTMLElement;
+  paragraph.textContent = "HelloX";
+  paragraph.dispatchEvent(new Event("input", { bubbles: true }));
+
+  // Give React / ProseMirror one async tick to process
+  await new Promise((r) => setTimeout(r, 50));
+
+  // The LATEST handler (b) must have been called; the stale one (a) must NOT have been called after rerender
+  expect(onChangeB).toHaveBeenCalled();
+  expect(onChangeA).not.toHaveBeenCalled();
 });
 
 test("AI slash items appear only when an adapter is provided", async () => {
