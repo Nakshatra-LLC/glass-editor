@@ -8,6 +8,11 @@ import { SlashMenu } from "./slash/SlashMenu";
 export type GlassEditorProps = {
   value: JSONContent;
   onChange: (doc: JSONContent) => void;
+  /**
+   * AI adapter that enables AI-powered slash-menu items. For stable behavior,
+   * pass a stable/memoized reference (e.g. via `useMemo` or module-level constant);
+   * a fresh object each render will not cause extra re-renders but is unnecessary.
+   */
   ai?: AiAdapter;
   extensions?: Extension[];
   slashItems?: SlashItem[];
@@ -18,8 +23,10 @@ export type GlassEditorProps = {
 
 export function GlassEditor({ value, onChange, ai, extensions, slashItems, placeholder, className, editable = true }: GlassEditorProps) {
   const [slashOpen, setSlashOpen] = useState(false);
-  // Reset the slash menu when the AI adapter changes so the menu reflects the new item set.
-  useEffect(() => { setSlashOpen(false); }, [ai]);
+  const hasAi = Boolean(ai);
+  // Reset the slash menu when the AI adapter's presence changes so the menu reflects the new item set.
+  // Using `hasAi` (not `ai`) avoids closing the menu on every render when a parent passes a fresh adapter object.
+  useEffect(() => { setSlashOpen(false); }, [hasAi]);
   const editor = useEditor({
     editable,
     extensions: extensions ?? defaultExtensions({ placeholder }),
