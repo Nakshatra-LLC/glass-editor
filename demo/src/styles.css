@@ -46,10 +46,12 @@ body {
   border-radius: 3px;
 }
 
+.demo-logo { vertical-align: middle; margin-right: 0.5rem; }
 .demo-main {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
   gap: 1.5rem;
+  align-items: start;
 }
 
 .editor-wrapper {
@@ -70,6 +72,7 @@ body {
   margin: 0 0 0.5rem;
 }
 
+.json-preview { position: sticky; top: 1rem; }
 .json-preview pre {
   margin: 0;
   padding: 1rem;
@@ -80,6 +83,14 @@ body {
   line-height: 1.5;
   overflow-x: auto;
   color: #374151;
-  max-height: 320px;
+  max-height: 80vh;
   overflow-y: auto;
+}
+@media (max-width: 860px) {
+  .demo-main { grid-template-columns: 1fr; }   /* stack on narrow screens */
+  .json-preview { position: static; }
+}
+@media (prefers-color-scheme: dark) {
+  body { background: #0b0b0f; color: #e8e8ea; }
+  .editor-wrapper { border-color: #2a2b35; }
 }
