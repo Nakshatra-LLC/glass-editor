@@ -110,7 +110,8 @@ function slashRenderer() {
       activeProps = props;
       index = 0;
       container = document.createElement("div");
-      document.body.appendChild(container);
+      const root = (props.editor.view.dom as HTMLElement).closest(".glass-editor") ?? document.body;
+      root.appendChild(container);
       component = new ReactRenderer(SlashMenu, {
         editor: props.editor,
         props: { items: props.items, selectedIndex: 0, onSelect: (item: SlashItem) => props.command(item) },
