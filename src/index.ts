@@ -1,5 +1,6 @@
-export const VERSION = "0.0.1";
+export const VERSION = "0.1.0";
 export { defaultExtensions } from "./extensions";
-export { defaultSlashItems, type SlashItem } from "./slash/items";
+export { defaultSlashItems, filterSlashItems, type SlashItem } from "./slash/items";
 export { aiSlashItems, type AiAdapter } from "./ai/aiSlashItems";
+export { defaultBubbleItems, type BubbleItem } from "./bubble/items";
 export { GlassEditor, type GlassEditorProps } from "./GlassEditor";

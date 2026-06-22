@@ -172,6 +172,8 @@ test("stable public API: runtime exports and type re-exports are present in inde
     "defaultSlashItems",
     "aiSlashItems",
     "VERSION",
+    "filterSlashItems",
+    "defaultBubbleItems",
   ];
 
   // Type exports that must survive the public surface
@@ -179,6 +181,7 @@ test("stable public API: runtime exports and type re-exports are present in inde
     "GlassEditorProps",
     "SlashItem",
     "AiAdapter",
+    "BubbleItem",
   ];
 
   for (const name of REQUIRED_VALUE_EXPORTS) {
