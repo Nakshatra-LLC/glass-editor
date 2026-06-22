@@ -95,10 +95,47 @@
 
 /* Ask-AI inline input */
 .glass-askai {
-  border: 1.5px solid var(--glass-accent); border-radius: var(--glass-radius);
-  background: var(--glass-popup-bg); box-shadow: var(--glass-shadow); padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1.5px solid var(--glass-accent);
+  border-radius: var(--glass-radius);
+  background: var(--glass-popup-bg);
+  box-shadow: var(--glass-shadow);
+  padding: 0.3rem;
 }
-.glass-askai__input { width: 22rem; max-width: 60vw; border: 0; outline: none; background: none; color: var(--glass-fg); padding: 0.4rem 0.5rem; font-size: 0.95rem; }
+.glass-askai__input {
+  flex: 1;
+  min-width: 14rem;
+  max-width: 60vw;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--glass-fg);
+  padding: 0.4rem 0.5rem;
+  font-size: 0.95rem;
+}
+.glass-askai__submit {
+  flex-shrink: 0;
+  width: 1.9rem;
+  height: 1.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 7px;
+  background: var(--glass-accent);
+  color: var(--glass-accent-fg);
+  cursor: pointer;
+  padding: 0;
+}
+.glass-askai__submit:hover {
+  opacity: 0.85;
+}
+.glass-askai__submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 
 /* Gutter */
 .glass-gutter { position: absolute; left: 0.15rem; display: flex; align-items: center; gap: 0.1rem; opacity: 0; transition: opacity 0.12s; }

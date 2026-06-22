@@ -1,4 +1,3 @@
-import type { Editor } from "@tiptap/react";
 import type { SlashItem } from "../slash/items";
 import { IconSparkle } from "../slash/icons";
 
@@ -7,14 +6,11 @@ export type AiAdapter = {
   ask: (context: string, instruction: string) => Promise<string>;
 };
 
-export function aiSlashItems(ai: AiAdapter, hooks?: { onAsk?: () => void }): SlashItem[] {
+export function aiSlashItems(ai: AiAdapter, hooks?: { onAsk?: () => void; onContinue?: () => void }): SlashItem[] {
   return [
     {
       id: "ai-continue", label: "Continue Writing", group: "AI", icon: <IconSparkle />,
-      run: async (e: Editor) => {
-        try { e.commands.insertContent(await ai.continue(e.getText())); }
-        catch (err) { console.error("glass-editor: AI request failed", err); }
-      },
+      run: () => { hooks?.onContinue?.(); },
     },
     {
       id: "ai-ask", label: "Ask AI", group: "AI", icon: <IconSparkle />,
