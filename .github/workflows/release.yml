@@ -4,9 +4,9 @@ name: Release
 #   - Opens/updates a "Version Packages" PR when changesets are present, OR
 #   - Publishes to npm when that PR is merged (no changesets remain).
 #
-# REQUIRED repo secret: NPM_TOKEN — create an npm Automation/Granular Access Token
-# scoped to @nakshatra.io/clean-editor and add it under
-# Settings → Secrets and variables → Actions → New repository secret.
+# Publishing uses npm Trusted Publishing (OIDC) — NO NPM_TOKEN secret required.
+# One-time setup on npm: the package → Settings → Trusted Publisher → GitHub Actions,
+# repo Nakshatra-LLC/clean-editor, workflow release.yml.
 
 on:
   push:
@@ -39,12 +39,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # OIDC trusted publishing needs npm >= 11.5; Node 20 ships npm 10.
+      - name: Upgrade npm for OIDC trusted publishing
+        run: npm install -g npm@latest
+
       - name: Create release PR or publish
         uses: changesets/action@v1
         with:
           publish: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # Tell npm to attach a signed provenance attestation on publish.
+          # No NPM_TOKEN — auth is via OIDC trusted publishing; provenance is automatic.
           NPM_CONFIG_PROVENANCE: "true"
