@@ -1,10 +1,6 @@
 <div align="center">
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/clean-editor-lockup-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/clean-editor-lockup-light.svg">
-  <img alt="Clean Editor" src="assets/clean-editor-social.png">
-</picture>
+<img alt="Clean Editor — a React + TipTap rich-text editor with a slash menu and injected AI" src="assets/clean-editor-social.png" width="100%">
 
 <br/>
 <br/>
