@@ -1,0 +1,56 @@
+name: Bug report
+description: Report a problem with @nakshatra/glass-editor
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug! Please fill out the sections below.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, including what you expected to happen.
+      placeholder: When I ..., the editor ...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps (or a minimal code sample / sandbox) that reproduce the issue.
+      placeholder: |
+        1. Render <GlassEditor value={...} onChange={...} />
+        2. ...
+        3. See error
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Library version
+      description: Which version of @nakshatra/glass-editor?
+      placeholder: 0.0.1
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: React version, TipTap versions, bundler, browser, OS.
+      placeholder: |
+        - react: 18.3.0
+        - @tiptap/react: 2.8.0
+        - bundler: Vite 5
+        - browser: Chrome 125
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output / stack trace
+      description: Paste any relevant errors. This is automatically formatted as code.
+      render: shell
+    validations:
+      required: false
