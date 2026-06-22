@@ -155,6 +155,7 @@ export const VERSION: string;
 | `placeholder` | `string` | — | Empty-state placeholder text. |
 | `className` | `string` | — | Class on the editor root. |
 | `editable` | `boolean` | `true` | Toggle read-only mode. |
+| `theme` | `"light" \| "dark"` | — | Force a color theme; omit for automatic (`prefers-color-scheme`). |
 
 **Defaults out of the box:** StarterKit + Link + TaskList + Image + Placeholder, a selection bubble menu, and the `/` slash menu with the standard block items. Everything is overridable through props.
 

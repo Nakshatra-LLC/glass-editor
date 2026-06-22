@@ -3,6 +3,8 @@ import type { JSONContent } from "@tiptap/react";
 import { GlassEditor, type AiAdapter } from "@nakshatra/glass-editor";
 import "@nakshatra/glass-editor/styles.css";
 
+type Theme = "light" | "dark";
+
 const mockAi: AiAdapter = {
   continue: (_ctx) =>
     new Promise((res) =>
@@ -39,13 +41,24 @@ const initialDoc: JSONContent = {
 
 export default function App() {
   const [doc, setDoc] = useState<JSONContent>(initialDoc);
+  const [theme, setTheme] = useState<Theme>(
+    matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  );
 
   return (
-    <div className="demo-layout">
+    <div className="demo-layout" data-demo-theme={theme}>
       <header className="demo-header">
         <img src="/mark.svg" alt="" width={36} height={36} className="demo-logo" />
-        <h1>@nakshatra/glass-editor</h1>
-        <p>Runnable demo — Vite + React. Press <kbd>/</kbd> for blocks, AI adapter included.</p>
+        <div>
+          <h1>@nakshatra/glass-editor</h1>
+          <p>Runnable demo — Vite + React. Press <kbd>/</kbd> for blocks, AI adapter included.</p>
+        </div>
+        <button
+          className="demo-theme-btn"
+          onClick={() => setTheme(t => t === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? "☀ Light" : "☾ Dark"}
+        </button>
       </header>
 
       <main className="demo-main">
@@ -54,6 +67,7 @@ export default function App() {
             value={doc}
             onChange={setDoc}
             ai={mockAi}
+            theme={theme}
             placeholder="Write something, or press / for blocks…"
           />
         </div>

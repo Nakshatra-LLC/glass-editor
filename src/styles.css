@@ -18,7 +18,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .glass-editor {
+  .glass-editor:not([data-theme="light"]) {
     --glass-bg: #0f0f14;
     --glass-fg: #e8e8ea;
     --glass-muted: #9aa0aa;
@@ -31,6 +31,20 @@
     --glass-popup-border: #2a2b35;
     --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
   }
+}
+
+.glass-editor[data-theme="dark"] {
+  --glass-bg: #0f0f14;
+  --glass-fg: #e8e8ea;
+  --glass-muted: #9aa0aa;
+  --glass-border: #2a2b35;
+  --glass-accent: #8b8df2;
+  --glass-accent-fg: #0f0f14;
+  --glass-hover: #1b1c25;
+  --glass-popup-bg: #16171f;
+  --glass-popup-fg: #e8e8ea;
+  --glass-popup-border: #2a2b35;
+  --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
 
 /* Editor content */
@@ -51,6 +65,7 @@
 .glass-editor__content code { background: var(--glass-hover); border-radius: 4px; padding: 0.1rem 0.3rem; font-size: 0.9em; }
 .glass-editor__content pre code { background: none; padding: 0; }
 .glass-editor__content hr { border: none; border-top: 1px solid var(--glass-border); margin: 1rem 0; }
+.glass-editor__content a { color: var(--glass-accent); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .glass-editor__content p.is-editor-empty:first-child::before {
   content: attr(data-placeholder); color: var(--glass-muted); float: left; height: 0; pointer-events: none;
 }

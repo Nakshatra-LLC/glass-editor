@@ -32,3 +32,15 @@ test("renders injected bubble items", async () => {
   );
   expect(await screen.findByRole("button", { name: "Ask AI" })).toBeInTheDocument();
 });
+
+test("renders root with data-theme when theme prop is set", async () => {
+  const { container } = render(<GlassEditor value={doc} onChange={() => {}} theme="dark" />);
+  const root = container.querySelector(".glass-editor");
+  expect(root?.getAttribute("data-theme")).toBe("dark");
+});
+
+test("renders root without data-theme when theme prop is omitted", async () => {
+  const { container } = render(<GlassEditor value={doc} onChange={() => {}} />);
+  const root = container.querySelector(".glass-editor");
+  expect(root?.getAttribute("data-theme")).toBeNull();
+});

@@ -21,10 +21,11 @@ export type GlassEditorProps = {
   placeholder?: string;
   className?: string;
   editable?: boolean;
+  theme?: "light" | "dark";
 };
 
 export function GlassEditor({
-  value, onChange, ai, extensions, slashItems, bubbleItems, placeholder, className, editable = true,
+  value, onChange, ai, extensions, slashItems, bubbleItems, placeholder, className, editable = true, theme,
 }: GlassEditorProps) {
   const [aiMode, setAiMode] = useState<null | "ask" | "continue">(null);
   const [gutterTop, setGutterTop] = useState<number | null>(null);
@@ -84,7 +85,7 @@ export function GlassEditor({
   const bubble = [...defaultBubbleItems, ...(bubbleItems ?? [])];
 
   return (
-    <div ref={rootRef} className={`glass-editor ${className ?? ""}`}>
+    <div ref={rootRef} className={`glass-editor ${className ?? ""}`} {...(theme !== undefined ? { "data-theme": theme } : {})}>
       {editor && <Gutter editor={editor} top={gutterTop} />}
       {editor && <GlassBubbleMenu editor={editor} items={bubble} />}
       <EditorContent editor={editor} />
