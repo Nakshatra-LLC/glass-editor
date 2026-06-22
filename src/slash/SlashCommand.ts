@@ -28,9 +28,9 @@ export function createSlashCommand(opts: SlashCommandOptions): Extension {
           editor: this.editor,
           char: "/",
           startOfLine: false,
-          items: ({ query }) => opts.items(query),
+          items: ({ query }) => this.options.items(query),
           command: ({ editor, range, props }) => executeSlashItem(editor, range, props),
-          render: opts.render,
+          render: this.options.render,
         }),
       ];
     },
