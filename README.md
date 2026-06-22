@@ -1,32 +1,206 @@
-# @nakshatra/glass-editor
+<div align="center">
 
-A small, reusable **React + TipTap** rich-text (WYSIWYG) editor built on the OSS TipTap
-StarterKit — with pluggable blocks, a `/` slash-command menu, and an **injected AI adapter**
-(`Continue Writing` / `Ask AI`). Domain-agnostic: the editor knows nothing about your backend
-or AI provider — you inject them.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/glass-editor-lockup-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/glass-editor-lockup-light.svg">
+  <img alt="Glass Editor" src="assets/glass-editor-lockup-light.svg" width="340">
+</picture>
 
-> Status: early. Design: `docs/superpowers/specs/2026-06-22-glass-editor-design.md`.
+<br/>
+<br/>
+
+**A small, reusable React + TipTap rich-text editor — pluggable blocks, a `/` slash-command menu, and an injected AI adapter. Domain-agnostic.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-6366F1.svg)](LICENSE)
+![React](https://img.shields.io/badge/React-18%2B-2DD4BF.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-6366F1.svg)
+![Built on TipTap](https://img.shields.io/badge/built%20on-TipTap%20StarterKit-E879F9.svg)
+![Status: early](https://img.shields.io/badge/status-early-E879F9.svg)
+
+</div>
+
+---
+
+Glass Editor brings a polished, "Notion-like" TipTap editing experience using **free MIT primitives** — TipTap's StarterKit plus a handful of free extensions — so you own the result and can share one editor across multiple products via a single dependency-injected component.
+
+The editor knows nothing about your backend, your content model, or your AI provider. You inject all of those. That keeps it reusable: the same component powers a CMS, a document builder, or anything else, each supplying its own adapter.
 
 ## Why
 
-The polished "Notion-like" TipTap editors are Pro/Cloud. Glass Editor replicates that UX from
-**free MIT primitives** (StarterKit + `@tiptap/suggestion` + a few extensions) and owns the
-result, so it can be shared across apps via a single dependency-injected component.
+The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather than pay per seat or scatter divergent editors across repos, Glass Editor builds that UX once from free primitives and publishes it as a standalone library. The authoring and AI investment becomes reusable, and there's a single editor to maintain.
 
-## Usage
+## Features
+
+- **Slash-command menu** — press `/` (or click the **＋** button) for a grouped command menu: Text, Heading 1–3, bullet / numbered / to-do lists, quote, code, and divider.
+- **Injected AI adapter** — provide an adapter and the slash menu gains **Continue Writing** and **Ask AI**, which insert the result at the cursor. Omit it and those items simply don't appear.
+- **Selection bubble menu** — bold / italic / link on text selection.
+- **Controlled** — `value` is a ProseMirror JSON doc; `onChange(doc)` fires on every edit. Your app owns persistence, and external `value` updates sync back into the editor.
+- **Pluggable** — replace the extension set, append your own slash items (e.g. "Insert image from library"), and theme everything via your own CSS.
+- **Zero domain coupling** — no backend imports, no bundled design system, no AI provider baked in. Enforced by [guard tests](AGENTS.md#guarded-patterns-do-not-break).
+
+## Status
+
+**Early.** The public API below reflects the current contract. The package is **not yet published to npm** — consume it via a local link during development; npm publish lands once the API stabilizes. Full design notes live in [`docs/superpowers/specs/2026-06-22-glass-editor-design.md`](docs/superpowers/specs/2026-06-22-glass-editor-design.md).
+
+A caret-anchored slash popup with filtering and keyboard navigation (via `@tiptap/suggestion`) is the planned next step — see [Roadmap](#roadmap).
+
+## Install
+
+`react`, `react-dom`, and the core `@tiptap/*` packages are **peer dependencies** — your app provides a single copy so there's no duplicate React or ProseMirror instance. The block extensions (StarterKit, Link, TaskList, …) ship as regular dependencies of this package.
+
+```bash
+# peers (in the host app)
+npm install react react-dom @tiptap/react @tiptap/core @tiptap/pm
+
+# the editor — once published:
+npm install @nakshatra/glass-editor
+```
+
+During development, link it locally instead:
+
+```jsonc
+// host package.json
+{
+  "dependencies": {
+    "@nakshatra/glass-editor": "link:../glass-editor"
+  }
+}
+```
+
+## Quick start
+
+```tsx
+import { useState } from "react";
+import { GlassEditor } from "@nakshatra/glass-editor";
+import type { JSONContent } from "@tiptap/react";
+import "@nakshatra/glass-editor/styles.css";
+
+const empty: JSONContent = { type: "doc", content: [] };
+
+export function MyEditor() {
+  const [doc, setDoc] = useState<JSONContent>(empty);
+
+  return (
+    <GlassEditor
+      value={doc}
+      onChange={setDoc}
+      placeholder="Type / for commands…"
+    />
+  );
+}
+```
+
+### With AI
+
+The editor never imports `fetch` or a provider. You supply an `AiAdapter`; where the network call lives is entirely up to your app:
 
 ```tsx
 import { GlassEditor, type AiAdapter } from "@nakshatra/glass-editor";
-import "@nakshatra/glass-editor/styles.css";
 
 const ai: AiAdapter = {
-  continue: (text) => myBackend.continue(text),
-  ask: (text, instruction) => myBackend.ask(text, instruction),
+  continue: (context) => myBackend.continue(context),
+  ask: (context, instruction) => myBackend.ask(context, instruction),
 };
 
-<GlassEditor value={doc} onChange={setDoc} ai={ai} />
+<GlassEditor value={doc} onChange={setDoc} ai={ai} />;
 ```
+
+If the adapter rejects, the slash action inserts nothing and the editor stays usable — it never throws into your app.
+
+## API
+
+```ts
+import type { Editor, JSONContent, Extension } from "@tiptap/react";
+
+export type AiAdapter = {
+  /** Extend prose from the given context. Returns text/markdown to insert. */
+  continue: (context: string) => Promise<string>;
+  /** Apply a freeform instruction to the context. Returns text/markdown. */
+  ask: (context: string, instruction: string) => Promise<string>;
+};
+
+export type SlashItem = {
+  id: string;
+  label: string;
+  group?: string;            // e.g. "AI" | "Blocks"
+  keywords?: string[];       // reserved for filtering (planned)
+  run: (editor: Editor) => void | Promise<void>;
+};
+
+export function GlassEditor(props: GlassEditorProps): JSX.Element;
+export function defaultExtensions(opts?: { placeholder?: string }): Extension[];
+export const defaultSlashItems: SlashItem[];
+export function aiSlashItems(ai: AiAdapter): SlashItem[];
+export const VERSION: string;
+```
+
+### `<GlassEditor>` props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `JSONContent` | — | ProseMirror doc; the source of truth. |
+| `onChange` | `(doc: JSONContent) => void` | — | Fires on every edit with the new doc. |
+| `ai` | `AiAdapter` | — | Optional. Enables the **Continue Writing** / **Ask AI** slash items. |
+| `extensions` | `Extension[]` | `defaultExtensions()` | Replace the default extension set. |
+| `slashItems` | `SlashItem[]` | `defaultSlashItems` | Appended to the defaults. |
+| `placeholder` | `string` | — | Empty-state placeholder text. |
+| `className` | `string` | — | Class on the editor root. |
+| `editable` | `boolean` | `true` | Toggle read-only mode. |
+
+**Defaults out of the box:** StarterKit + Link + TaskList + Image + Placeholder, a selection bubble menu, and the `/` slash menu with the standard block items. Everything is overridable through props.
+
+## Theming
+
+Glass Editor ships **structural, unstyled CSS** with stable class hooks — no bundled design system. Theme it from your app (e.g. Tailwind) against hooks like `.glass-editor` and `.glass-slash`. Import the base structural styles once:
+
+```ts
+import "@nakshatra/glass-editor/styles.css";
+```
+
+## Architecture
+
+| Path | Responsibility |
+| --- | --- |
+| `src/GlassEditor.tsx` | The React component — `useEditor`, bubble menu, slash wiring, controlled `value`. |
+| `src/extensions.ts` | `defaultExtensions(opts)` — the free extension set, configurable. |
+| `src/slash/items.ts` | `SlashItem` type + `defaultSlashItems` (the block command registry). |
+| `src/slash/SlashMenu.tsx` | The grouped, controlled slash-menu UI. |
+| `src/ai/aiSlashItems.ts` | Builds the Continue / Ask items from an `AiAdapter`. |
+| `src/index.ts` | Public exports. |
+| `src/styles.css` | Minimal structural styles + class hooks. |
+| `src/guards.test.ts` | Architecture guard tests (peer singletons, OSS-only, zero coupling, stable API). |
+
+Built with **Vite** in library mode (ESM + `.d.ts` via `vite-plugin-dts`, peers externalized). Tested with **vitest + @testing-library/react + jsdom**.
+
+## Roadmap
+
+Designed to add later without breaking consumers:
+
+- Caret-anchored slash popup with **filtering** and **keyboard navigation** (`@tiptap/suggestion`).
+- Markdown import/export, image upload helpers, and additional default blocks.
+
+## Out of scope (v1)
+
+Collaboration / TipTap Cloud, the Pro drag handle, image *upload* (inject an image slash item instead), markdown import/export, non-React bindings, mobile-specific UX, and a bundled theme.
+
+## Development
+
+This is a library, so there's no app `dev` server — use the bundled demo or tests.
+
+```bash
+pnpm install     # also installs git hooks
+pnpm demo        # runnable demo app (Vite) — exercise the editor in a browser
+pnpm test        # vitest
+pnpm typecheck   # tsc --noEmit
+pnpm build       # Vite library build → ESM + types + styles.css
+```
+
+Git hooks enforce `typecheck` + `test` on commit and `test` + `build` on push. See [AGENTS.md](AGENTS.md) for the full contributor guide and the guarded patterns.
+
+## Contributing
+
+Issues and PRs welcome — please read [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) first. Because the editor is intentionally domain-agnostic, host-specific behavior belongs in your app's adapter and slash items rather than in the core.
 
 ## License
 
-MIT © Nakshatra LLC
+[MIT](LICENSE) © Nakshatra LLC
