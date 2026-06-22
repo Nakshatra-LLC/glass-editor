@@ -1,17 +1,54 @@
-import type { Editor } from "@tiptap/react";
 import type { SlashItem } from "./items";
 
-export function SlashMenu({ items, editor, open, onClose }: { items: SlashItem[]; editor: Editor; open: boolean; onClose: () => void }) {
-  if (!open) return null;
+export function reduceSlashKey(
+  key: string,
+  state: { index: number; count: number },
+): { index: number; handled: boolean; select: boolean; close: boolean } {
+  const { index, count } = state;
+  const base = { index, handled: false, select: false, close: false };
+  if (count === 0) {
+    if (key === "Escape") return { ...base, close: true, handled: true };
+    return base;
+  }
+  switch (key) {
+    case "ArrowDown": return { ...base, index: (index + 1) % count, handled: true };
+    case "ArrowUp": return { ...base, index: (index - 1 + count) % count, handled: true };
+    case "Enter":
+    case "Tab": return { ...base, select: true, handled: true };
+    case "Escape": return { ...base, close: true, handled: true };
+    default: return base;
+  }
+}
+
+export function SlashMenu({
+  items, selectedIndex, onSelect,
+}: { items: SlashItem[]; selectedIndex: number; onSelect: (item: SlashItem) => void }) {
+  if (items.length === 0) {
+    return <div className="glass-slash" role="menu"><div className="glass-slash__empty">No results</div></div>;
+  }
   const groups = Array.from(new Set(items.map((i) => i.group ?? "Blocks")));
   return (
-    <div role="menu" className="glass-slash">
+    <div className="glass-slash" role="menu">
       {groups.map((g) => (
         <div key={g} className="glass-slash__group">
           <div className="glass-slash__label">{g}</div>
-          {items.filter((i) => (i.group ?? "Blocks") === g).map((i) => (
-            <button key={i.id} type="button" className="glass-slash__item" onClick={() => { i.run(editor); onClose(); }}>{i.label}</button>
-          ))}
+          {items.filter((i) => (i.group ?? "Blocks") === g).map((i) => {
+            const flatIndex = items.indexOf(i);
+            const active = flatIndex === selectedIndex;
+            return (
+              <button
+                key={i.id}
+                type="button"
+                role="menuitem"
+                className={`glass-slash__item${active ? " is-active" : ""}`}
+                aria-selected={active}
+                onMouseDown={(e) => { e.preventDefault(); onSelect(i); }}
+              >
+                {i.icon && <span className="glass-slash__icon">{i.icon}</span>}
+                <span className="glass-slash__text">{i.label}</span>
+              </button>
+            );
+          })}
         </div>
       ))}
     </div>

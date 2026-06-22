@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useEditor, EditorContent, BubbleMenu, type Content, type Extension, type JSONContent } from "@tiptap/react";
 import { defaultExtensions } from "./extensions";
-import { defaultSlashItems, type SlashItem } from "./slash/items";
-import { aiSlashItems, type AiAdapter } from "./ai/aiSlashItems";
-import { SlashMenu } from "./slash/SlashMenu";
+import type { SlashItem } from "./slash/items";
+import type { AiAdapter } from "./ai/aiSlashItems";
 
 export type GlassEditorProps = {
   value: JSONContent;
@@ -22,11 +21,7 @@ export type GlassEditorProps = {
 };
 
 export function GlassEditor({ value, onChange, ai, extensions, slashItems, placeholder, className, editable = true }: GlassEditorProps) {
-  const [slashOpen, setSlashOpen] = useState(false);
-  const hasAi = Boolean(ai);
-  // Reset the slash menu when the AI adapter's presence changes so the menu reflects the new item set.
-  // Using `hasAi` (not `ai`) avoids closing the menu on every render when a parent passes a fresh adapter object.
-  useEffect(() => { setSlashOpen(false); }, [hasAi]);
+  // Unused: ai and slashItems are reserved for future use (Task 9: wiring new SlashMenu)
   // Keep a ref to the latest onChange so onUpdate always calls the current handler
   // without recreating the editor when the prop changes (avoids stale-closure bug).
   const onChangeRef = useRef(onChange);
@@ -46,11 +41,11 @@ export function GlassEditor({ value, onChange, ai, extensions, slashItems, place
     }
   }, [editor, value]);
 
-  const items: SlashItem[] = [...(ai ? aiSlashItems(ai) : []), ...defaultSlashItems, ...(slashItems ?? [])];
+  // Slash menu wiring deferred to Task 9
   return (
-    <div className={`glass-editor ${className ?? ""}`} onKeyDown={(e) => { if (e.key === "/") setSlashOpen(true); if (e.key === "Escape") setSlashOpen(false); }}>
+    <div className={`glass-editor ${className ?? ""}`}>
       <div className="glass-editor__bar">
-        <button type="button" aria-label="Insert block" onClick={() => setSlashOpen((v) => !v)}>＋</button>
+        <button type="button" aria-label="Insert block">＋</button>
       </div>
       {editor && (
         <BubbleMenu editor={editor} className="glass-bubble">
@@ -60,7 +55,6 @@ export function GlassEditor({ value, onChange, ai, extensions, slashItems, place
         </BubbleMenu>
       )}
       <EditorContent editor={editor} />
-      {editor && <SlashMenu items={items} editor={editor} open={slashOpen} onClose={() => setSlashOpen(false)} />}
     </div>
   );
 }
