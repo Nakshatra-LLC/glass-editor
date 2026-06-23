@@ -26,3 +26,10 @@ test("styles.css supports data-theme forced dark override", () => {
 test("styles.css defines the clean-askai-layer rule", () => {
   expect(css).toContain(".clean-askai-layer");
 });
+
+test("styles.css styles the gutter drag handle and add-block popup", () => {
+  expect(css).toContain(".clean-gutter");
+  expect(css).toContain(".clean-gutter__add");
+  expect(css).toContain(".clean-gutter__drag");
+  expect(css).toContain(".clean-addblock");
+});

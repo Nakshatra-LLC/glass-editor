@@ -105,9 +105,10 @@ variables) without changing the core. Browse
 [issues labeled `help wanted` / `good first issue`](https://github.com/Nakshatra-LLC/clean-editor/issues)
 to claim one (open an issue first if it doesn't exist):
 
-- **Drag-to-reorder blocks** — a custom OSS drag handle in the gutter (TipTap's
-  is Pro, so it must be implemented from scratch; the `.clean-gutter__drag` slot
-  is reserved for it).
+- **Block-actions menu (M2/M3)** — the grip already drags to reorder (shipped in
+  0.2.0 via the MIT `@tiptap/extension-drag-handle-react`). The next step is a
+  grip-**click** menu: Turn Into, Duplicate, Color, Delete, Ask AI. See the
+  [spec](docs/superpowers/specs/2026-06-22-drag-handle-and-gutter-plus-design.md#future-milestones).
 - **Rich AI selection menus** — Adjust Tone, Fix grammar, Make longer/shorter,
   Simplify, Emojify, Summarize, Translate — all as `bubbleItems` / `slashItems`
   that call `ai.ask` with preset instructions.

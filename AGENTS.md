@@ -50,6 +50,7 @@ Run from the repo root with `pnpm <script>`:
 | `typecheck`   | Type-check with `tsc --noEmit` (no emit)                 |
 | `demo`        | Start the local demo app (Vite dev server)               |
 | `demo:build`  | Build the demo app to static files                        |
+| `ci:build`    | Full local CI parity — frozen install + `typecheck` + `test` + `build` + `demo:build`. Run before pushing to catch what CI/Pages would fail on. |
 
 There is no library `dev` script — this is a library, not an app. Use `pnpm demo` to exercise it interactively, or write a Vitest test.
 
@@ -94,8 +95,11 @@ Source lives under `src/`. Each file has one responsibility:
 | `bubble/items.ts`          | `BubbleItem` type + `defaultBubbleItems` (Bold, Italic, Link).              |
 | `bubble/BubbleMenu.tsx`    | Selection bubble toolbar; merges `defaultBubbleItems` + consumer `bubbleItems`. Exports `CleanBubbleMenu`. |
 | `bubble/LinkInput.tsx`     | Inline link-URL input shown inside the bubble.                              |
-| `gutter/Gutter.tsx`        | `＋` gutter button — tracks cursor block and opens the slash popup.         |
-| `positioning.ts`           | `clampPopup(rect, viewport)` — keeps slash popup inside the viewport.       |
+| `gutter/Gutter.tsx`        | Hover handle — mounts the MIT `<DragHandle>` (drag-to-reorder) wrapping the `＋` button + six-dot grip; tracks the hovered block for the `＋`. |
+| `gutter/addBlock.ts`       | `addBlockAfter(editor, pos)` — inserts (or reuses) an empty block after a position for the `＋`. |
+| `gutter/AddBlockMenu.tsx`  | The `＋` popup — renders `SlashMenu` directly (portaled into the editor root), with keyboard nav + outside-click dismiss. |
+| `gutter/icons.tsx`         | `＋` and six-dot grip inline SVG icons.                                      |
+| `positioning.ts`           | `clampPopup(anchor, size, viewport)` — keeps the slash / add-block popup inside the viewport. |
 | `ai/aiSlashItems.tsx`      | `AiAdapter` type + `aiSlashItems(ai, hooks?)` — "Continue Writing" / "Ask AI". |
 | `CleanEditor.tsx`          | The main component. Composes extensions, bubble menu, gutter, and slash.    |
 | `styles.css`               | CSS-variable theme (light/dark auto-switch) + structural layout hooks. Uses `.clean-*` class prefix. |
@@ -104,6 +108,8 @@ Source lives under `src/`. Each file has one responsibility:
 Design rules:
 
 - **Injection over coupling.** The AI adapter, extra slash items, extra bubble items, and extensions are all props. Defaults are provided but always overridable.
+- **`extensions` is array-or-function.** An array fully replaces the defaults (escape hatch); a function `(defaults) => Extension[]` receives the fully-wired defaults — slash command included — to extend, reorder, or remove. The slash command's `render` lives in `CleanEditor` and isn't exported, so the function form is the only way to keep `/` while customizing the set.
+- **The drag handle is a React component, not an extension.** `<DragHandle>` (from `@tiptap/extension-drag-handle-react`) self-registers its ProseMirror plugin on mount and is rendered by `Gutter`/`CleanEditor` — it is **not** added to `defaultExtensions()`.
 - **Slash-item merge order** in `CleanEditor` is `[...(ai ? aiSlashItems(ai) : []), ...defaultSlashItems, ...(slashItems ?? [])]`.
 - **Bubble-item merge order** in `CleanEditor` is `[...defaultBubbleItems, ...(bubbleItems ?? [])]`.
 - **Controlled value.** `CleanEditor` syncs external `value` changes into the editor (guarded against echo loops) and always calls the latest `onChange` via a ref.
@@ -144,5 +150,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contribution workflow.
 
 - **Editing behaves strangely / "duplicate ProseMirror" errors:** a peer dep got bundled or duplicated. Verify the singletons above stay external and as `peerDependencies` (guard test 1).
 - **`act(...)` warnings in test output:** mounting a real TipTap editor in jsdom emits these from TipTap's async teardown; they are a known environment artifact, not a component bug. Do not silence them by disabling React's act environment.
+- **The slash / `+` menu flickers or vanishes on every keystroke:** a prop passed to `<DragHandle>` changed identity on render. Its plugin-registration effect depends on `[element, editor, onNodeChange, pluginKey, tippyOptions]`; an unstable `onNodeChange` or `tippyOptions` makes it unregister + re-register the plugin, whose `editor.view.updateState()` tears down **all** plugin views — including the suggestion popup (firing its `onExit` mid-open). Memoize both (`useCallback` / `useMemo`); `Gutter` already does, with a regression test in `gutter/Gutter.test.tsx`.
+- **A popup crashes the tree with `insertBefore … not a child of this node`:** a popup was rendered as a React sibling of `<DragHandle>`. Tippy reparents the handle's DOM out of the subtree, so React's sibling insertion references a moved node. **Portal** such popups into the `.clean-editor` root instead (see how `AddBlockMenu` is mounted in `CleanEditor`).
+- **`<DragHandle>`/tippy can't be unit-tested in jsdom** (it reparents DOM via tippy.js). Tests stub `@tiptap/extension-drag-handle-react` to a passthrough and verify our own logic (the `＋`/grip markup, `onNodeChange`→`posRef` wiring, prop stability); the real drag/positioning is verified in `pnpm demo`.
 - **Type errors only at build time:** run `pnpm typecheck` for the fast signal; the build's declaration step uses `tsconfig.build.json` (which excludes tests).
 - **A commit/push was rejected by a hook:** the suite or typecheck failed. Read the output and fix the code — do not `--no-verify`.

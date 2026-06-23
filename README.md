@@ -44,11 +44,12 @@ The polished "Notion"/"Agent" TipTap editors are **Pro/Cloud, not OSS**. Rather 
 
 ## Features
 
-- **Slash-command menu** — press `/` for a caret-anchored command popup — type to filter, `↑/↓`/`Enter` to choose; a `＋` gutter button opens it too.
+- **Slash-command menu** — press `/` for a caret-anchored command popup — type to filter, `↑/↓`/`Enter` to choose.
+- **Block gutter** — hover any block for a handle: `＋` inserts a new block (opening the same command menu) and a six-dot grip **drags to reorder**. Built on the MIT [`@tiptap/extension-drag-handle-react`](https://www.npmjs.com/package/@tiptap/extension-drag-handle-react) — no Pro/Cloud packages.
 - **Injected AI adapter** — provide an adapter and the slash menu gains **Continue Writing** and **Ask AI**, which insert the result at the cursor. Omit it and those items simply don't appear.
 - **Selection bubble menu** — bold / italic / link on text selection.
 - **Controlled** — `value` is a ProseMirror JSON doc; `onChange(doc)` fires on every edit. Your app owns persistence, and external `value` updates sync back into the editor.
-- **Pluggable** — replace the extension set, append your own slash items (e.g. "Insert image from library"), and theme everything via your own CSS.
+- **Pluggable** — replace *or extend* the extension set (array or `(defaults) => …` function), append your own slash items (e.g. "Insert image from library"), and theme everything via your own CSS.
 - **Zero domain coupling** — no backend imports, no bundled design system, no AI provider baked in. Enforced by [guard tests](AGENTS.md#guarded-patterns-do-not-break).
 - **Live doc inspector** — pass `liveDoc` to render a built-in read-only JSON view of the current document below the editor (off by default).
 
@@ -164,7 +165,7 @@ export const VERSION: string;
 | `value` | `JSONContent` | — | ProseMirror doc; the source of truth. |
 | `onChange` | `(doc: JSONContent) => void` | — | Fires on every edit with the new doc. |
 | `ai` | `AiAdapter` | — | Optional. Enables the **Continue Writing** / **Ask AI** slash items. |
-| `extensions` | `Extension[]` | `defaultExtensions()` | Replace the default extension set. |
+| `extensions` | `Extension[] \| ((defaults: Extension[]) => Extension[])` | `defaultExtensions()` | **Array** fully replaces the defaults (escape hatch). **Function** receives the fully-wired defaults (including the slash command) so you can extend, reorder, or remove them without losing `/` — e.g. `(d) => [...d, Mention]`. |
 | `slashItems` | `SlashItem[]` | `defaultSlashItems` | Appended to the defaults. |
 | `bubbleItems` | `BubbleItem[]` | `defaultBubbleItems` | Appended to the default Bold/Italic/Link bubble; the seam for AI selection menus. |
 | `placeholder` | `string` | — | Empty-state placeholder text. |
@@ -218,8 +219,11 @@ Override any token from your app's CSS:
 | `src/bubble/LinkInput.tsx` | Inline link-URL input shown inside the bubble. |
 | `src/ai/aiSlashItems.tsx` | `AiAdapter` type + `aiSlashItems(ai, hooks?)` — "Continue Writing" / "Ask AI". |
 | `src/ai/AskAiInput.tsx` | Inline Ask-AI input shown in the slash menu. |
-| `src/gutter/Gutter.tsx` | `＋` gutter button — tracks cursor block and opens the slash popup. |
-| `src/positioning.ts` | `clampPopup(rect, viewport)` — keeps slash popup inside the viewport. |
+| `src/gutter/Gutter.tsx` | Hover handle — mounts the MIT `<DragHandle>` wrapping the `＋` button and six-dot drag grip; tracks the hovered block for the `＋`. |
+| `src/gutter/addBlock.ts` | `addBlockAfter(editor, pos)` — inserts (or reuses) an empty block after a position for the `＋`. |
+| `src/gutter/AddBlockMenu.tsx` | The `＋` popup — renders `SlashMenu` directly (portaled into the editor root), with keyboard nav + outside-click dismiss. |
+| `src/gutter/icons.tsx` | `＋` and six-dot grip inline SVG icons. |
+| `src/positioning.ts` | `clampPopup(anchor, size, viewport)` — keeps the slash / add-block popup inside the viewport. |
 | `src/styles.css` | CSS-variable theme (light/dark auto-switch) + structural layout hooks. |
 | `src/guards.test.ts` | Architecture guard tests — enforce peer singletons, OSS-only, zero coupling, stable API. |
 
@@ -230,13 +234,13 @@ Built with **Vite** in library mode (ESM + `.d.ts` via `vite-plugin-dts`, peers 
 Designed to add later without breaking consumers — community / v2:
 
 - **Rich AI action menus** — Adjust Tone, Summarize, Translate, Fix grammar — all as `bubbleItems` / `slashItems` that call `ai.ask` with preset instructions.
-- **Drag-to-reorder blocks** — a custom OSS drag handle in the gutter (TipTap's is Pro).
+- **Block-actions menu** — grip-click menu (Turn Into, Duplicate, Color, Delete, Ask AI). M2/M3 — see the [spec](docs/superpowers/specs/2026-06-22-drag-handle-and-gutter-plus-design.md#future-milestones).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md#backlog--where-to-help) for the detailed backlog and how to claim an item.
 
 ## Out of scope (v1)
 
-Collaboration / TipTap Cloud, the Pro drag handle, image *upload* (inject an image slash item instead), markdown import/export, non-React bindings, mobile-specific UX, and a bundled theme.
+Collaboration / TipTap Cloud, multi-block drag selection, keyboard-driven reorder, image *upload* (inject an image slash item instead), markdown import/export, non-React bindings, mobile-specific UX, and a bundled theme.
 
 ## Development
 
@@ -248,6 +252,7 @@ pnpm demo        # runnable demo app (Vite) — exercise the editor in a browser
 pnpm test        # vitest
 pnpm typecheck   # tsc --noEmit
 pnpm build       # Vite library build → ESM + types + styles.css
+pnpm ci:build    # full local CI parity (frozen install + typecheck + test + build + demo:build)
 ```
 
 Git hooks enforce `typecheck` + `test` on commit and `test` + `build` on push. See [AGENTS.md](AGENTS.md) for the full contributor guide and the guarded patterns.

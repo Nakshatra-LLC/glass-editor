@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import type { SlashItem } from "./items";
 
 export function reduceSlashKey(
@@ -23,6 +24,14 @@ export function reduceSlashKey(
 export function SlashMenu({
   items, selectedIndex, onSelect,
 }: { items: SlashItem[]; selectedIndex: number; onSelect: (item: SlashItem) => void }) {
+  // Keep the highlighted item visible during keyboard nav. The popup is scrollable
+  // (max-height + overflow-y:auto), so without this the selection scrolls out of
+  // sight past the fold. Optional-chain scrollIntoView — jsdom doesn't implement it.
+  const activeRef = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    activeRef.current?.scrollIntoView?.({ block: "nearest" });
+  }, [selectedIndex]);
+
   if (items.length === 0) {
     return <div className="clean-slash" role="menu"><div className="clean-slash__empty">No results</div></div>;
   }
@@ -38,6 +47,7 @@ export function SlashMenu({
             return (
               <button
                 key={i.id}
+                ref={active ? activeRef : undefined}
                 type="button"
                 role="menuitem"
                 className={`clean-slash__item${active ? " is-active" : ""}`}

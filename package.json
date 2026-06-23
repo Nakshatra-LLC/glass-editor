@@ -29,6 +29,7 @@
     "prepare": "husky",
     "demo": "pnpm --dir demo dev",
     "demo:build": "pnpm --dir demo build",
+    "ci:build": "pnpm install --frozen-lockfile && pnpm typecheck && pnpm test && pnpm build && pnpm demo:build",
     "prepublishOnly": "pnpm build",
     "release": "pnpm build && changeset publish"
   },
@@ -52,6 +53,7 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
+    "@tiptap/extension-drag-handle-react": "^2.27",
     "@tiptap/extension-image": "^2.8.0",
     "@tiptap/extension-link": "^2.8.0",
     "@tiptap/extension-placeholder": "^2.8.0",

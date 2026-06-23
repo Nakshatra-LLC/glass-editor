@@ -30,3 +30,26 @@ test("SlashMenu shows an empty state when there are no items", () => {
   render(<SlashMenu items={[]} selectedIndex={0} onSelect={() => {}} />);
   expect(screen.getByText(/no results/i)).toBeInTheDocument();
 });
+
+test("SlashMenu scrolls the active item into view when the selected index changes", () => {
+  // The popup is scrollable (max-height + overflow-y:auto). Keyboard nav must keep
+  // the highlighted item visible, otherwise the selection scrolls out of sight past
+  // the fold (jsdom has no scrollIntoView, so we install a spy).
+  const scrollSpy = vi.fn();
+  const original = (Element.prototype as unknown as { scrollIntoView?: unknown }).scrollIntoView;
+  Element.prototype.scrollIntoView = scrollSpy;
+  try {
+    const items: SlashItem[] = Array.from({ length: 12 }, (_, n) => ({
+      id: `i${n}`,
+      label: `Item ${n}`,
+      run: () => {},
+    }));
+    const { rerender } = render(<SlashMenu items={items} selectedIndex={0} onSelect={() => {}} />);
+    scrollSpy.mockClear(); // ignore the initial-mount scroll
+    rerender(<SlashMenu items={items} selectedIndex={9} onSelect={() => {}} />);
+    expect(scrollSpy).toHaveBeenCalled();
+    expect(scrollSpy.mock.calls[0][0]).toMatchObject({ block: "nearest" });
+  } finally {
+    (Element.prototype as unknown as { scrollIntoView?: unknown }).scrollIntoView = original;
+  }
+});

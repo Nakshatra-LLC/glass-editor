@@ -7,3 +7,6 @@ demo/node_modules
 *.tgz
 .vite/
 .playwright-mcp/
+
+# Superpowers SDD workflow scratch (plans/reports/ledger) — not product code
+.superpowers/
