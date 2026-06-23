@@ -1,22 +1,39 @@
+import { useMemo, useRef } from "react";
 import type { Editor } from "@tiptap/react";
+import { DragHandle } from "@tiptap/extension-drag-handle-react";
+import { IconPlus, IconGrip } from "./icons";
 
-export function openSlashAt(editor: Editor): void {
-  editor.chain().focus().insertContent("/").run();
-}
-
-export function Gutter({ editor, top }: { editor: Editor; top?: number | null }) {
+export function GutterContent({ onAdd }: { onAdd: () => void }) {
   return (
-    <div className="clean-gutter" contentEditable={false} style={top == null ? undefined : { top }}>
+    <div className="clean-gutter">
       <button
         type="button"
-        aria-label="Insert block"
+        aria-label="Add block"
         className="clean-gutter__add"
-        onMouseDown={(e) => { e.preventDefault(); openSlashAt(editor); }}
+        onClick={onAdd}
       >
-        ＋
+        <IconPlus />
       </button>
-      {/* Reserved drag-handle slot — inert in v1 (drag is deferred, needs a custom OSS impl). */}
-      <span className="clean-gutter__drag" aria-hidden="true" />
+      <span className="clean-gutter__drag" aria-label="Drag to reorder" role="img">
+        <IconGrip />
+      </span>
     </div>
+  );
+}
+
+export function Gutter({ editor, onAdd }: { editor: Editor; onAdd: (pos: number) => void }) {
+  const posRef = useRef<number | null>(null);
+  // Tippy options MUST be memoized (else the handle re-inits every render).
+  const tippyOptions = useMemo(() => ({ offset: [-4, 8] as [number, number] }), []);
+  return (
+    <DragHandle
+      editor={editor}
+      tippyOptions={tippyOptions}
+      onNodeChange={({ pos }: { node: import("@tiptap/pm/model").Node | null; editor: Editor; pos: number }) => {
+        posRef.current = pos;
+      }}
+    >
+      <GutterContent onAdd={() => onAdd(posRef.current ?? editor.state.selection.from)} />
+    </DragHandle>
   );
 }

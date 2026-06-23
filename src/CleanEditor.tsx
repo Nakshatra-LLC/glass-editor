@@ -9,6 +9,8 @@ import { CleanBubbleMenu } from "./bubble/BubbleMenu";
 import { defaultBubbleItems, type BubbleItem } from "./bubble/items";
 import { AskAiInput } from "./ai/AskAiInput";
 import { Gutter } from "./gutter/Gutter";
+import { AddBlockMenu } from "./gutter/AddBlockMenu";
+import { addBlockAfter } from "./gutter/addBlock";
 
 export type CleanEditorProps = {
   value: JSONContent;
@@ -30,7 +32,7 @@ export function CleanEditor({
   value, onChange, ai, extensions, slashItems, bubbleItems, placeholder, className, editable = true, theme, liveDoc = false,
 }: CleanEditorProps) {
   const [aiMode, setAiMode] = useState<null | "ask" | "continue">(null);
-  const [gutterTop, setGutterTop] = useState<number | null>(null);
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChange);
   useEffect(() => { onChangeRef.current = onChange; }, [onChange]);
@@ -63,33 +65,24 @@ export function CleanEditor({
     }
   }, [editor, value]);
 
-  useEffect(() => {
+  const handleAdd = (pos: number) => {
     if (!editor) return;
-    const update = () => {
-      const root = rootRef.current;
-      if (!root) return;
-      try {
-        const { from } = editor.state.selection;
-        const coords = editor.view.coordsAtPos(from);
-        const rootRect = root.getBoundingClientRect();
-        const next = coords.top - rootRect.top;
-        setGutterTop(prev => prev === next ? prev : next);
-      } catch { /* position not available yet */ }
-    };
-    editor.on("selectionUpdate", update);
-    editor.on("transaction", update);
-    update();
-    return () => {
-      editor.off("selectionUpdate", update);
-      editor.off("transaction", update);
-    };
-  }, [editor]);
+    addBlockAfter(editor, pos);
+    setAddMenuOpen(true);
+  };
 
   const bubble = [...defaultBubbleItems, ...(bubbleItems ?? [])];
 
   return (
     <div ref={rootRef} className={`clean-editor${className ? ` ${className}` : ""}`} {...(theme !== undefined ? { "data-theme": theme } : {})}>
-      {editor && <Gutter editor={editor} top={gutterTop} />}
+      {editor && <Gutter editor={editor} onAdd={handleAdd} />}
+      {editor && addMenuOpen && (
+        <AddBlockMenu
+          editor={editor}
+          items={itemsRef.current}
+          onClose={() => setAddMenuOpen(false)}
+        />
+      )}
       {editor && <CleanBubbleMenu editor={editor} items={bubble} />}
       <EditorContent editor={editor} />
       {liveDoc && (
