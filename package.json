@@ -52,6 +52,7 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
+    "@tiptap/extension-drag-handle-react": "^2.27",
     "@tiptap/extension-image": "^2.8.0",
     "@tiptap/extension-link": "^2.8.0",
     "@tiptap/extension-placeholder": "^2.8.0",
