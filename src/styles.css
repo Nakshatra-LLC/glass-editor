@@ -171,13 +171,31 @@
   white-space: pre;
 }
 
-/* Gutter */
-.clean-gutter { position: absolute; left: 0.15rem; display: flex; align-items: center; gap: 0.1rem; opacity: 0; transition: opacity 0.12s; }
-.clean-editor:hover .clean-gutter,
-.clean-gutter:focus-within { opacity: 1; }
-.clean-gutter__add {
-  width: 1.6rem; height: 1.6rem; border: 0; border-radius: 7px; background: none;
-  color: var(--clean-muted); cursor: pointer; font-size: 1.1rem; line-height: 1;
+/* Gutter drag handle (rendered inside the tippy drag-handle element) */
+.clean-gutter {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--clean-fg);
+  opacity: 0.55;
 }
-.clean-gutter__add:hover { background: var(--clean-hover); color: var(--clean-fg); }
-.clean-gutter__drag { width: 0.9rem; height: 1.2rem; }
+.clean-gutter__add,
+.clean-gutter__drag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: var(--clean-radius);
+  color: inherit;
+  cursor: pointer;
+}
+.clean-gutter__drag { cursor: grab; }
+.clean-gutter__add:hover,
+.clean-gutter__drag:hover { background: color-mix(in srgb, var(--clean-fg) 12%, transparent); }
+
+/* Add-block popup (the + menu) — same surface as the slash popup */
+.clean-addblock { position: fixed; z-index: 50; }
