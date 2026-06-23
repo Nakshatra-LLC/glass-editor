@@ -50,6 +50,7 @@ Run from the repo root with `pnpm <script>`:
 | `typecheck`   | Type-check with `tsc --noEmit` (no emit)                 |
 | `demo`        | Start the local demo app (Vite dev server)               |
 | `demo:build`  | Build the demo app to static files                        |
+| `ci:build`    | Full local CI parity — frozen install + `typecheck` + `test` + `build` + `demo:build`. Run before pushing to catch what CI/Pages would fail on. |
 
 There is no library `dev` script — this is a library, not an app. Use `pnpm demo` to exercise it interactively, or write a Vitest test.
 

@@ -252,6 +252,7 @@ pnpm demo        # runnable demo app (Vite) — exercise the editor in a browser
 pnpm test        # vitest
 pnpm typecheck   # tsc --noEmit
 pnpm build       # Vite library build → ESM + types + styles.css
+pnpm ci:build    # full local CI parity (frozen install + typecheck + test + build + demo:build)
 ```
 
 Git hooks enforce `typecheck` + `test` on commit and `test` + `build` on push. See [AGENTS.md](AGENTS.md) for the full contributor guide and the guarded patterns.
